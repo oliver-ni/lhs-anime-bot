@@ -14,6 +14,13 @@ module.exports.run = (client, message, args) => {
 
     const key = `${message.guild.id}-${user.id}`;
 
+    client.points.ensure(key, {
+        user: user.id,
+        guild: message.guild.id,
+        points: 0,
+        level: 0
+    });
+
     const embed = new Discord.RichEmbed();
     embed.setThumbnail(user.avatarURL);
     embed.setAuthor(user.tag, user.avatarURL);
