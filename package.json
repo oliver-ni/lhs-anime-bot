@@ -2,8 +2,13 @@
   "name": "animebot",
   "version": "1.0.0",
   "main": "main.js",
+  "scripts": {
+    "start": "node main.js"
+  },
   "dependencies": {
     "axios": "^0.19.0",
+    "better-sqlite-pool": "^0.2.2",
+    "better-sqlite3": "^5.4.3",
     "discord.js": "^11.5.1",
     "enmap": "^5.1.2",
     "html-entities": "^1.2.1"
