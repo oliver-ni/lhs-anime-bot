@@ -29,6 +29,14 @@ module.exports.run = async (client, message, args) => {
     const collector = leaderboard.createReactionCollector(filter, { time: 30000 });
 
     collector.on('collect', (reaction, reactionCollector) => {
+
+        for (const user of reaction.users) {
+            console.log(user);
+            if (!user[1].bot) {
+                reaction.remove(user[0]);
+            }
+        }
+
         if (reaction.emoji.name == "⏮") current = 0;
         if (reaction.emoji.name == "◀") current -= 5;
         if (reaction.emoji.name == "▶") current += 5
