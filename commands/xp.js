@@ -17,6 +17,7 @@ module.exports.run = (client, message, args) => {
     const embed = new Discord.RichEmbed();
     embed.setThumbnail(user.avatarURL);
     embed.setAuthor(user.tag, user.avatarURL);
+    embed.setColor(0xF1C40F);
 
     const curLevel = client.points.get(key, "level");
     const curXP = client.points.get(key, "points");

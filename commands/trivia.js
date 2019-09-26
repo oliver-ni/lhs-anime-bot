@@ -16,8 +16,10 @@ exports.run = async (client, message, args) => {
         const response = await axios.get("https://opentdb.com/api.php?amount=1&category=31&type=multiple");
         reply.delete();
         const embed = new Discord.RichEmbed()
-                            .setTitle("**" + Entities.decode(response.data.results[0].question) + "**")
-                            .setAuthor(message.author.tag, message.author.avatarURL);
+        embed.setTitle("**" + Entities.decode(response.data.results[0].question) + "**")
+        embed.setAuthor(message.author.tag, message.author.avatarURL);
+        embed.setColor(0xF1C40F);
+
         const answers = shuffle([
             response.data.results[0].correct_answer,
             ...response.data.results[0].incorrect_answers

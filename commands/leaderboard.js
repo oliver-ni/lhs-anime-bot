@@ -6,10 +6,11 @@ module.exports.run = async (client, message, args) => {
 
     const getEmbed = (start) => {
         const embed = new Discord.RichEmbed()
-            .setTitle("**Leaderboard**")
-            .setDescription("Most active users in the LHS Anime Club Discord server.")
-            .setFooter('LHS Anime Club Bot', client.user.avatarURL)
-            .setColor(0xF1C40F);
+        embed.setTitle("**Leaderboard**")
+        embed.setDescription("Most active users in the LHS Anime Club Discord server.")
+        embed.setFooter('LHS Anime Club Bot', client.user.avatarURL)
+        embed.setColor(0xF1C40F);
+
         for (let i = start; i < start + 5 && i < server.length; i++) {
             const user = server[i];
             embed.addField(`**${i+1}. ${client.users.get(user.user).tag}**`, `${user.points} (level ${user.level})`);

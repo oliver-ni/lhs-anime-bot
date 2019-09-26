@@ -22,7 +22,7 @@ exports.run = async (client, message, args) => {
         let img = await fetchMeme(client); while (img.length == 0) img = await fetchMeme(client);
         reply.delete();
         message.channel.send(
-            new Discord.RichEmbed().setImage(Entities.decode(img[0].source.url))
+            new Discord.RichEmbed().setImage(Entities.decode(img[0].source.url)).setColor(0xF1C40F)
         );
     } catch (e) {
         reply.edit("Unable to load meme.");
