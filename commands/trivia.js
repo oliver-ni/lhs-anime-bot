@@ -43,9 +43,9 @@ exports.run = async (client, message, args) => {
             question.delete();
     
             if (answers[selected] == response.data.results[0].correct_answer) {
-                message.reply("the answer **" + answers[selected] + "** is correct!");
+                message.reply("the answer **" + Entities.decode(answers[selected]) + "** is correct!");
             } else {
-                message.reply("the answer **" + answers[selected] + "** is incorrect. The correct answer is **" + response.data.results[0].correct_answer + "**.");
+                message.reply("the answer **" + Entities.decode(answers[selected]) + "** is incorrect. The correct answer is **" + Entities.decode(response.data.results[0].correct_answer) + "**.");
             }
         }).catch(collected => {
             question.delete();
