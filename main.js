@@ -1,12 +1,16 @@
 const Discord = require("discord.js");
 const Enmap = require("enmap");
 const fs = require("fs");
+const Jikan = require('jikan-node');
+const Hashids = require('hashids/cjs')
 
 const client = new Discord.Client();
 const config = require("./config.js");
 
 client.config = config;
 client.points = new Enmap({name: "points"});
+client.mal = new Jikan();
+client.hashids = new Hashids("LHS Anime Club");
 client.after = "";
 
 client.on("ready", () => {

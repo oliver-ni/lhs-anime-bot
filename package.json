@@ -11,6 +11,8 @@
     "better-sqlite3": "^5.4.3",
     "discord.js": "^11.5.1",
     "enmap": "^5.1.2",
-    "html-entities": "^1.2.1"
+    "hashids": "^2.0.1",
+    "html-entities": "^1.2.1",
+    "jikan-node": "^1.2.0"
   }
 }
