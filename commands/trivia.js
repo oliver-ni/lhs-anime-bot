@@ -15,7 +15,7 @@ exports.run = async (client, message, args) => {
     try {
         const response = await axios.get("https://opentdb.com/api.php?amount=1&category=31&type=multiple");
         reply.delete();
-        const embed = new Discord.RichEmbed()
+        const embed = new Discord.RichEmbed();
         embed.setTitle("**" + Entities.decode(response.data.results[0].question) + "**")
         embed.setAuthor(message.author.tag, message.author.avatarURL);
         embed.setColor(0xF1C40F);
