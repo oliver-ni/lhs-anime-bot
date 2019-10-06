@@ -78,31 +78,22 @@ Link your MAL account using **!linkmal**`);
 
         embed.setTitle("**MyAnimeList Profile**");
         embed.addField("**Anime Stats**",  `**Episodes:** ${maluser.anime_stats.episodes_watched}
-                                            **Days:** ${maluser.anime_stats.days_watched}
-                                            **Mean Score:** ${maluser.anime_stats.mean_score}
-                                            **Watching:** ${maluser.anime_stats.watching}
-                                            **Completed:** ${maluser.anime_stats.completed}
-                                            **On Hold:** ${maluser.anime_stats.on_hold}
-                                            **Dropped:** ${maluser.anime_stats.dropped}
-                                            **Planned:** ${maluser.anime_stats.plan_to_watch}`, true)
+**Days:** ${maluser.anime_stats.days_watched}
+**Mean Score:** ${maluser.anime_stats.mean_score}
+**Watching:** ${maluser.anime_stats.watching}
+**Completed:** ${maluser.anime_stats.completed}
+**On Hold:** ${maluser.anime_stats.on_hold}
+**Dropped:** ${maluser.anime_stats.dropped}
+**Planned:** ${maluser.anime_stats.plan_to_watch}`, true)
 
         embed.addField("**Manga Stats**",  `**Chapters:** ${maluser.manga_stats.chapters_read}
-                                            **Days:** ${maluser.manga_stats.days_read}
-                                            **Mean Score:** ${maluser.manga_stats.mean_score}
-                                            **Reading:** ${maluser.manga_stats.reading}
-                                            **Completed:** ${maluser.manga_stats.completed}
-                                            **On Hold:** ${maluser.manga_stats.on_hold}
-                                            **Dropped:** ${maluser.manga_stats.dropped}
-                                            **Planned:** ${maluser.manga_stats.plan_to_read}`, true)
-
-//     embed.addField("**Manga Stats**", `**Episodes Watched:** ${maluser.anime_stats.episodes_watched}
-// **Days Watched:** ${maluser.anime_stats.days_watched}
-// **Mean Score:** ${maluser.anime_stats.mean_score}
-// **Watching:** ${maluser.anime_stats.watching}
-// **Completed:** ${maluser.anime_stats.completed}
-// **On Hold:** ${maluser.anime_stats.on_hold}
-// **Dropped:** ${maluser.anime_stats.dropped}
-// **Plan to Watch:** ${maluser.anime_stats.plan_to_watch}`, true)
+**Days:** ${maluser.manga_stats.days_read}
+**Mean Score:** ${maluser.manga_stats.mean_score}
+**Reading:** ${maluser.manga_stats.reading}
+**Completed:** ${maluser.manga_stats.completed}
+**On Hold:** ${maluser.manga_stats.on_hold}
+**Dropped:** ${maluser.manga_stats.dropped}
+**Planned:** ${maluser.manga_stats.plan_to_read}`, true)
 
         reply.delete();
         message.channel.send(embed);
