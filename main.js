@@ -14,7 +14,8 @@ client.hashids = new Hashids("LHS Anime Club");
 client.after = "";
 
 client.on("ready", () => {
-        console.log(`Logged in as ${client.user.tag}!`);
+    console.log(`Logged in as ${client.user.tag}!`);
+    client.channels.get(client.config.rolesChannelID).fetchMessage(client.config.rolesMessageID);
 });
 
 fs.readdir("./events/", (err, files) => {
