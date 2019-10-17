@@ -33,6 +33,13 @@ exports.run = async (client, message, args) => {
         const filter = (reaction, user) => {
             return ["🇦", "🇧", "🇨", "🇩"].includes(reaction.emoji.name) && user.id === message.author.id;
         };
+
+        const react2idx = {
+            "🇦": 0,
+            "🇧": 1,
+            "🇨": 2,
+            "🇩": 3
+        }
         
         question.awaitReactions(filter, {
             max: 1, time: 10000, errors: ["time"]
@@ -48,6 +55,7 @@ exports.run = async (client, message, args) => {
                 message.reply("the answer **" + Entities.decode(answers[selected]) + "** is incorrect. The correct answer is **" + Entities.decode(response.data.results[0].correct_answer) + "**.");
             }
         }).catch(collected => {
+            console.log(collected);
             question.delete();
             message.reply("you didn't answer in time!. The correct answer is **" + response.data.results[0].correct_answer + "**.");
         });
@@ -56,13 +64,6 @@ exports.run = async (client, message, args) => {
         await question.react("🇧");
         await question.react("🇨");
         await question.react("🇩");
-
-        const react2idx = {
-            "🇦": 0,
-            "🇧": 1,
-            "🇨": 2,
-            "🇩": 3
-        }
     } catch (e) {
         reply.edit("Unable to load trivia.")
     }
