@@ -13,6 +13,7 @@
     "enmap": "^5.1.2",
     "hashids": "^2.0.1",
     "html-entities": "^1.2.1",
-    "jikan-node": "^1.2.0"
+    "jikan-node": "^1.2.0",
+    "moment": "^2.24.0"
   }
 }
