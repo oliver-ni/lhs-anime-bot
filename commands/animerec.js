@@ -29,5 +29,6 @@ exports.run = async (client, message, args) => {
     message.react("✅");
 
     await suggestion.react("👍");
+    await suggestion.react("👎");
 
 };
