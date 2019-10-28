@@ -15,7 +15,7 @@ client.after = "";
 
 client.on("ready", () => {
     console.log(`Logged in as ${client.user.tag}!`);
-    client.channels.get(client.config.rolesChannelID).fetchMessage(client.config.rolesMessageID);
+    // client.channels.get(client.config.rolesChannelID).fetchMessage(client.config.rolesMessageID);
 });
 
 fs.readdir("./events/", (err, files) => {
