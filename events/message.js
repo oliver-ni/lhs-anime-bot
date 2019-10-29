@@ -6,20 +6,20 @@ module.exports = (client, message) => {
 
     if (message.guild) {
         const key = `${message.guild.id}-${message.author.id}`;
-        client.points.ensure(key, {
+        client.dbM.ensure(key, {
             user: message.author.id,
             guild: message.guild.id,
             points: 0,
             level: 0
         });
 
-        client.points.inc(key, "points");
+        client.dbM.inc(key, "points");
 
-        const curLevel = Math.floor(0.1 * Math.sqrt(client.points.get(key, "points")));
+        const curLevel = Math.floor(0.1 * Math.sqrt(client.dbM.get(key, "points")));
 
-        if (client.points.get(key, "level") < curLevel) {
+        if (client.dbM.get(key, "level") < curLevel) {
           message.reply(`you are now level **${curLevel}**!`);
-          client.points.set(key, curLevel, "level");
+          client.dbM.set(key, curLevel, "level");
         }
     }
 

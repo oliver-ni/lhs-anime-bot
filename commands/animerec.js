@@ -4,11 +4,11 @@ const moment = require('moment');
 exports.run = async (client, message, args) => {
 
     const key = `${message.guild.id}-${message.author.id}`;
-    client.points.ensure(key, new Date(0), "suggest");
+    client.dbM.ensure(key, new Date(0), "suggest");
 
-    console.log(client.points.get(key, "suggest"))
+    //console.log(client.dbM.get(key, "suggest"))
 
-    const diff = moment.duration(moment(client.points.get(key, "suggest")).diff(moment()));
+    const diff = moment.duration(moment(client.dbM.get(key, "suggest")).diff(moment()));
 
     if (Math.abs(diff.asHours()) < 10) {
         const wait = diff.add(10, "h");
@@ -16,7 +16,7 @@ exports.run = async (client, message, args) => {
         return;
     }
 
-    client.points.set(key, new Date(), "suggest");
+    client.dbM.set(key, new Date(), "suggest");
     
     const embed = new Discord.RichEmbed();
     embed.setTitle("**Anime Suggestion**");

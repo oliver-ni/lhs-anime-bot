@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 
 module.exports.run = async (client, message, args) => {
-    let server = client.points.filter(p => p.guild === message.guild.id).array();
+    let server = client.dbM.filter(p => p.guild === message.guild.id).array();
     server = server.sort((a, b) => b.points - a.points);
 
     const getEmbed = (start) => {
@@ -32,7 +32,7 @@ module.exports.run = async (client, message, args) => {
     collector.on('collect', (reaction, reactionCollector) => {
 
         for (const user of reaction.users) {
-            console.log(user);
+            //console.log(user);
             if (!user[1].bot) {
                 reaction.remove(user[0]);
             }

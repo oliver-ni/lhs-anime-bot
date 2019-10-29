@@ -19,8 +19,8 @@ exports.run = async (client, message, args) => {
 		}
         user = client.users.get(mention);
         
-        if (client.points.has(`${message.guild.id}-${user.id}`, "mal")) {
-            malname = client.points.get(`${message.guild.id}-${user.id}`, "mal");
+        if (client.dbM.has(`${message.guild.id}-${user.id}`, "mal")) {
+            malname = client.dbM.get(`${message.guild.id}-${user.id}`, "mal");
             reply = await message.reply(`loading MyAnimeList account of **${args[0]}**...`);
             type = "mention";
         } else {
@@ -37,8 +37,8 @@ exports.run = async (client, message, args) => {
     }
     
     // !mal
-    else if (args.length == 0 && client.points.has(`${message.guild.id}-${message.author.id}`, "mal")) {
-        malname = client.points.get(`${message.guild.id}-${message.author.id}`, "mal");
+    else if (args.length == 0 && client.dbM.has(`${message.guild.id}-${message.author.id}`, "mal")) {
+        malname = client.dbM.get(`${message.guild.id}-${message.author.id}`, "mal");
         reply = await message.reply(`loading your MyAnimeList account...`);
         type = "self";
     }
@@ -57,7 +57,7 @@ Link your MAL account using **!linkmal**`);
         return message.channel.send(embed);
     }
 
-    console.log(malname);
+    //console.log(malname);
 
     try {
         const maluser = await client.mal.findUser(malname);
@@ -100,7 +100,7 @@ Link your MAL account using **!linkmal**`);
 
     } catch (e) {
         reply.edit("Unable to load MyAnimeList account.");
-        console.log(e);
+        //console.log(e);
     }
 
 }

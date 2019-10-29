@@ -14,7 +14,7 @@ module.exports.run = (client, message, args) => {
 
     const key = `${message.guild.id}-${user.id}`;
 
-    client.points.ensure(key, {
+    client.dbM.ensure(key, {
         user: user.id,
         guild: message.guild.id,
         points: 0,
@@ -26,8 +26,8 @@ module.exports.run = (client, message, args) => {
     embed.setAuthor(user.tag, user.avatarURL);
     embed.setColor(0xF1C40F);
 
-    const curLevel = client.points.get(key, "level");
-    const curXP = client.points.get(key, "points");
+    const curLevel = client.dbM.get(key, "level");
+    const curXP = client.dbM.get(key, "points");
     const xpMin = curLevel * curLevel * 100;
     const xpMax = (curLevel + 1) * (curLevel + 1) * 100;
 

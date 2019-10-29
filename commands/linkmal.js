@@ -51,7 +51,7 @@ exports.run = async (client, message, args) => {
         if (maluser.about.includes(code)) {
 
             const key = `${message.guild.id}-${message.author.id}`;
-            client.points.set(key, args[0], "mal");
+            client.dbM.set(key, args[0], "mal");
             
             const embed = new Discord.RichEmbed();
             embed.setTitle("**Success!**");
@@ -68,7 +68,7 @@ exports.run = async (client, message, args) => {
     } catch (e) {
         question.delete();
         message.channel.send("Unable to link MyAnimeList account.");
-        console.log(e);
+        //console.log(e);
     }
 
     // try {
@@ -83,7 +83,7 @@ exports.run = async (client, message, args) => {
 
     // } catch (e) {
     //     reply.edit("Unable to load MyAnimeList account.");
-    //     console.log(e);
+    //     //console.log(e);
     // }
 
 }

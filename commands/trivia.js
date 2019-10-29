@@ -55,7 +55,7 @@ exports.run = async (client, message, args) => {
                 message.reply("the answer **" + Entities.decode(answers[selected]) + "** is incorrect. The correct answer is **" + Entities.decode(response.data.results[0].correct_answer) + "**.");
             }
         }).catch(collected => {
-            console.log(collected);
+            //console.log(collected);
             question.delete();
             message.reply("you didn't answer in time!. The correct answer is **" + response.data.results[0].correct_answer + "**.");
         });

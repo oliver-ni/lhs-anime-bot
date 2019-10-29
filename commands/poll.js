@@ -18,7 +18,7 @@ exports.run = async (client, message, args) => {
     const suggestion = await message.channel.send(embed);
 
     for (let i = 0; i < choices.length; i++) {
-        console.log(alphabet[i]);
+        //console.log(alphabet[i]);
         await suggestion.react(alphabet[i])
     }
 

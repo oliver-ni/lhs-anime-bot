@@ -26,6 +26,6 @@ exports.run = async (client, message, args) => {
         );
     } catch (e) {
         reply.edit("Unable to load meme.");
-        console.log(e);
+        //console.log(e);
     }
 }

@@ -27,8 +27,8 @@ exports.run = async (client, message, args) => {
         }
         user = client.users.get(mention);
 
-        if (client.points.has(`${message.guild.id}-${user.id}`, "mal")) {
-            malname = client.points.get(`${message.guild.id}-${user.id}`, "mal");
+        if (client.dbM.has(`${message.guild.id}-${user.id}`, "mal")) {
+            malname = client.dbM.get(`${message.guild.id}-${user.id}`, "mal");
             reply = await message.reply(`loading MyAnimeList account of **${args[0]}**...`);
             type = "mention";
         } else {
@@ -45,8 +45,8 @@ exports.run = async (client, message, args) => {
     }
 
     // !mal
-    else if (args.length == 0 && client.points.has(`${message.guild.id}-${message.author.id}`, "mal")) {
-        malname = client.points.get(`${message.guild.id}-${message.author.id}`, "mal");
+    else if (args.length == 0 && client.dbM.has(`${message.guild.id}-${message.author.id}`, "mal")) {
+        malname = client.dbM.get(`${message.guild.id}-${message.author.id}`, "mal");
         reply = await message.reply(`loading your MyAnimeList account...`);
         type = "self";
     }
@@ -85,9 +85,9 @@ Link your MAL account using **!linkmal**`);
                 });
                 status = item.reading_status;
                 chunk = []
-                console.log();
-                console.log(statuses[status]);
-                console.log("=============");
+                //console.log();
+                //console.log(statuses[status]);
+                //console.log("=============");
             }
             if (length == 15) {
                 page.push({
@@ -98,10 +98,10 @@ Link your MAL account using **!linkmal**`);
                 length = 0;
                 chunk = [];
                 page = [];
-                console.log("-------------");
+                //console.log("-------------");
             }
             chunk.push(item);
-            console.log(item.title);
+            //console.log(item.title);
             length++;
         }
         page.push({
@@ -173,7 +173,7 @@ Link your MAL account using **!linkmal**`);
 
     } catch (e) {
         reply.edit("Unable to load MyAnimeList account.");
-        console.log(e);
+        //console.log(e);
     }
 
 }
