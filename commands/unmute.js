@@ -4,6 +4,10 @@ exports.run = async (client, message, args) => {
 
     if (args.length == 0) return;
 
+    if (!message.member.hasPermission('KICK_MEMBERS')) {
+        return message.reply("nice try, no.");
+    }
+
     const role = message.guild.roles.get("636807183358754816");
 
     client.dbI.ensure("mutes", []);

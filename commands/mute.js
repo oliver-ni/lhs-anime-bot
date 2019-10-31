@@ -28,30 +28,39 @@ exports.run = async (client, message, args) => {
         }
     }
 
+    let members = message.mentions.members;
+
+    if (!message.member.hasPermission('KICK_MEMBERS')) {
+        members = [[message.member.id, message.member]];
+        message.reply("nice try.");
+        seconds = 5*60;
+        duration = moment.duration(5, "minutes");
+    }
+
     date = date.add(duration);
 
     client.dbI.ensure("mutes", []);
 
-    for (const member of message.mentions.members) {
-        if (member[1].roles.has("636807183358754816")) {
-            message.channel.send(`${member[1]} is already muted.`);
+    for (const [id, member] of members) {
+        if (member.roles.has("636807183358754816")) {
+            message.channel.send(`${member} is already muted.`);
             continue;
         }
 
-        member[1].addRole(role);
+        member.addRole(role);
 
         if (seconds > -1) {
-            message.channel.send(`${member[1]} has been muted for **${duration.humanize()}**.`);
-            member[1].user.send(`You have been muted for **${duration.humanize()}**.`);
+            message.channel.send(`${member} has been muted for **${duration.humanize()}**.`);
+            member.user.send(`You have been muted for **${duration.humanize()}**.`);
 
             client.dbI.push("mutes", {
-                user: member[0],
+                user: id,
                 guild: message.guild.id,
                 end: date.toDate(),
             });
         } else {
-            message.channel.send(`${member[1]} has been muted.`);
-            member[1].user.send("You have been muted.");
+            message.channel.send(`${member} has been muted.`);
+            member.user.send("You have been muted.");
         }
     }
 
