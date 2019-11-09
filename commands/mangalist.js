@@ -78,7 +78,12 @@ module.exports = {
             const maluser = await client.mal.findUser(malname, "mangalist");
 
             const manga = maluser.manga.sort((a, b) => {
-                return a.watching_status - b.watching_status;
+                if (b.watching_status > a.watching_status) return -1;
+                if (a.watching_status > b.watching_status) return 1;
+                if (b.score < a.score) return -1;
+                if (a.score < b.score) return 1;
+                if (b.title > a.title) return -1;
+                if (a.title > b.title) return 1;
             });
 
             const pages = [];
