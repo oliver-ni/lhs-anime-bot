@@ -12,7 +12,7 @@ module.exports = {
         let user = message.author;
 
         if (args.length > 0 && client.utils.isMention(args[0])) {
-            user = client.utils.getMentionUser(args[0]);
+            user = client.utils.getMentionUser(client, args[0]);
         }
 
         const key = `${message.guild.id}-${user.id}`;

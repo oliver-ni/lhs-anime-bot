@@ -42,7 +42,7 @@ module.exports = {
         // !mal <@mention>
         if (args.length == 1 && client.utils.isMention(args[0])) {
 
-            user = client.utils.getMentionUser(args[0]);
+            user = client.utils.getMentionUser(client, args[0]);
 
             if (client.dbM.has(`${message.guild.id}-${user.id}`, "mal")) {
                 malname = client.dbM.get(`${message.guild.id}-${user.id}`, "mal");

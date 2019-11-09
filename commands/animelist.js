@@ -46,7 +46,7 @@ module.exports = {
         // !mal <@mention>
         if (args.length == 1 && client.utils.isMention(args[0])) {
 
-            user = client.utils.getMentionUser(args[0]);
+            user = client.utils.getMentionUser(client, args[0]);
 
             if (client.dbM.has(`${message.guild.id}-${user.id}`, "mal")) {
                 malname = client.dbM.get(`${message.guild.id}-${user.id}`, "mal");
@@ -82,7 +82,11 @@ module.exports = {
             const maluser = await client.mal.findUser(malname, "animelist");
 
             const anime = maluser.anime.sort((a, b) => {
-                return a.watching_status - b.watching_status;
+                if (b.watching_status > a.watching_status) return -1;
+                if (a.watching_status > b.watching_status) return 1;
+                if (b.title > a.title) return -1;
+                if (a.title > b.title) return 1;
+                return 0;
             });
 
             const pages = [];

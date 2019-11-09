@@ -14,7 +14,7 @@ const isMention = (text) => {
     return text.startsWith('<@') && text.endsWith('>');
 }
 
-const getMentionUser = (text) => {
+const getMentionUser = (client, text) => {
     let mention = text.slice(2, -1);
     if (mention.startsWith('!')) mention = mention.slice(1);
     return client.users.get(mention);
