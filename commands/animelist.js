@@ -125,6 +125,7 @@ module.exports = {
             const getEmbed = (curPage, maxPage) => {
 
                 const embed = new Discord.RichEmbed();
+
                 if (type == "mention") {
                     embed.setAuthor(user.tag, user.avatarURL);
                 } else if (type == "self") {
@@ -140,7 +141,12 @@ module.exports = {
 
                 for (const chunk of pages[curPage]) {
                     if (chunk.items.length == 0) continue
-                    embed.addField(`**${statuses[chunk.status]}**`, chunk.items.map(e => e.title).join("\n"))
+                    const txt = chunk.items.map(e => {
+                        let name = e.title;
+                        if (e.score > 0) name += ` **${e.score}**`
+                        return name;
+                    }).join("\n")
+                    embed.addField(`**${statuses[chunk.status]}**`, txt)
                 }
 
                 return embed;

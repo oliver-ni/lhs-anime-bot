@@ -94,9 +94,6 @@ module.exports = {
                     });
                     status = item.reading_status;
                     chunk = []
-                    //console.log();
-                    //console.log(statuses[status]);
-                    //console.log("=============");
                 }
                 if (length == 15) {
                     page.push({
@@ -107,10 +104,8 @@ module.exports = {
                     length = 0;
                     chunk = [];
                     page = [];
-                    //console.log("-------------");
                 }
                 chunk.push(item);
-                //console.log(item.title);
                 length++;
             }
             page.push({
@@ -135,7 +130,12 @@ module.exports = {
 
                 for (const chunk of pages[curPage]) {
                     if (chunk.items.length == 0) continue
-                    embed.addField(`**${statuses[chunk.status]}**`, chunk.items.map(e => e.title).join("\n"))
+                    const txt = chunk.items.map(e => {
+                        let name = e.title;
+                        if (e.score > 0) name += ` **${e.score}**`
+                        return name;
+                    }).join("\n")
+                    embed.addField(`**${statuses[chunk.status]}**`, txt)
                 }
                 return embed;
             }
