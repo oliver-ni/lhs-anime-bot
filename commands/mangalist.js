@@ -150,7 +150,7 @@ module.exports = {
                 return ["⏮", "◀", "▶", "⏭"].includes(reaction.emoji.name) && user.id !== client.user.id;
             };
 
-            const collector = animelist.createReactionCollector(filter, { time: 30000 });
+            const collector = animelist.createReactionCollector(filter, { time: 120000 });
 
             collector.on('collect', (reaction, reactionCollector) => {
 
