@@ -16,16 +16,21 @@ const fetchMeme = (client) => {
     });
 }
 
-exports.run = async (client, message, args) => {
-    const reply = await message.reply("loading meme...");
-    try {
-        let img = await fetchMeme(client); while (img.length == 0) img = await fetchMeme(client);
-        reply.delete();
-        message.channel.send(
-            new Discord.RichEmbed().setImage(Entities.decode(img[0].source.url)).setColor(0xF1C40F)
-        );
-    } catch (e) {
-        reply.edit("Unable to load meme.");
-        //console.log(e);
+module.exports = {
+    name: "meme",
+    description: "Retrieve a meme from r/animemes",
+    channelType: ["text"],
+    execute: async (client, message, args) => {
+        const reply = await message.reply("loading meme...");
+        try {
+            let img = await fetchMeme(client); while (img.length == 0) img = await fetchMeme(client);
+            reply.delete();
+            message.channel.send(
+                new Discord.RichEmbed().setImage(Entities.decode(img[0].source.url)).setColor(0xF1C40F)
+            );
+        } catch (e) {
+            reply.edit("Unable to load meme.");
+        }
+        return true;
     }
 }

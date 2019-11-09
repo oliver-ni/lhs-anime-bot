@@ -1,34 +1,43 @@
 const Discord = require("discord.js");
 const moment = require('moment');
 
-exports.run = async (client, message, args) => {
+module.exports = {
+    name: "animerec",
+    description: "Recommend an anime for us to watch.",
+    aliases: ["ar"],
+    channelType: ["text"],
+    usage: (client, message) => {
+        message.channel.send("Usage: `!animerec <anime>`");
+    },
+    execute: async (client, message, args) => {
 
-    const key = `${message.guild.id}-${message.author.id}`;
-    client.dbM.ensure(key, new Date(0), "suggest");
+        if (args.length == 0) return false;
 
-    //console.log(client.dbM.get(key, "suggest"))
+        const key = `${message.guild.id}-${message.author.id}`;
+        client.dbM.ensure(key, new Date(0), "suggest");
 
-    const diff = moment.duration(moment(client.dbM.get(key, "suggest")).diff(moment()));
+        const diff = moment.duration(moment(client.dbM.get(key, "suggest")).diff(moment()));
 
-    if (Math.abs(diff.asHours()) < 10) {
-        const wait = diff.add(10, "h");
-        message.reply(`please wait **${wait.hours()}h ${wait.minutes()}m** before using this command again.`);
-        return;
+        if (Math.abs(diff.asHours()) < 10) {
+            const wait = diff.add(10, "h");
+            message.reply(`please wait **${wait.hours()}h ${wait.minutes()}m** before using this command again.`);
+            return true;
+        }
+
+        client.dbM.set(key, new Date(), "suggest");
+
+        const embed = client.utils.getBaseEmbed(client, message.author);
+        embed.setTitle("**Anime Suggestion**");
+        embed.setDescription(args.join(" "));
+
+        const suggestion = await client.channels.get("635695804488744991").send(embed);
+
+        message.react("✅");
+
+        await suggestion.react("👍");
+        await suggestion.react("👎");
+
+        return true;
+
     }
-
-    client.dbM.set(key, new Date(), "suggest");
-    
-    const embed = new Discord.RichEmbed();
-    embed.setTitle("**Anime Suggestion**");
-    embed.setDescription(args.join(" "));
-    embed.setAuthor(message.author.tag, message.author.avatarURL)
-    embed.setFooter('LHS Anime Club Bot', client.user.avatarURL);
-
-    const suggestion = await client.channels.get("635695804488744991").send(embed);
-
-    message.react("✅");
-
-    await suggestion.react("👍");
-    await suggestion.react("👎");
-
-};
+}

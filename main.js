@@ -7,19 +7,30 @@ const moment = require("moment");
 
 const client = new Discord.Client();
 const config = require("./config.js");
+const utils = require("./utils.js");
+
+// Bind variables to client for easy access
 
 client.config = config;
 
-client.dbM = new Enmap({name: "points"});
-client.dbI = new Enmap({name: "db"});
+client.dbM = new Enmap({name: "points"});           // database of members
+client.dbI = new Enmap({name: "db"});               // database of information
 
-client.mal = new Jikan();
-client.hashids = new Hashids("LHS Anime Club");
-client.after = "";
+client.mal = new Jikan();                           // MyAnimeList API
+client.hashids = new Hashids("LHS Anime Club");     // Unique id generator
+client.after = "";                                  // For meme command
+
+client.utils = utils;
+
+// On bot ready
 
 client.on("ready", () => {
-    //console.log(`Logged in as ${client.user.tag}!`);
+    console.log(`Logged in as ${client.user.tag}!`);
+
+    // Fetch role assignment message
     client.channels.get(client.config.rolesChannelID).fetchMessage(client.config.rolesMessageID);
+
+    // Check for mutes every 10 seconds
     setInterval(() => {
         const mutes = client.dbI.get("mutes");
         let idx = 0;
@@ -42,26 +53,28 @@ client.on("ready", () => {
     }, 10000);
 });
 
-fs.readdir("./events/", (err, files) => {
-    if (err) return console.error(err);
-    files.forEach(file => {
-        const event = require(`./events/${file}`);
-        let eventName = file.split(".")[0];
-        client.on(eventName, event.bind(null, client));
-    });
-}); 
+// Load events
+
+const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
+
+for (const file of eventFiles) {
+    const event = require(`./events/${file}`);
+    let eventName = file.split(".")[0];
+    client.on(eventName, event.bind(null, client));
+}
+
+// Load commands
 
 client.commands = new Enmap();
 
-fs.readdir("./commands/", (err, files) => {
-    if (err) return console.error(err);
-    files.forEach(file => {
-        if (!file.endsWith(".js")) return;
-        let props = require(`./commands/${file}`);
-        let commandName = file.split(".")[0];
-        //console.log(`Attempting to load command ${commandName}`);
-        client.commands.set(commandName, props);
-    });
-});
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+	const command = require(`./commands/${file}`);
+    console.log(`Attempting to load command file ${file}`);
+	client.commands.set(command.name, command);
+}
+
+// Login with token
 
 client.login(config.token);

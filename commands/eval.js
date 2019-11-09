@@ -7,22 +7,34 @@ const clean = text => {
         return text;
 }
 
-module.exports.run = async (client, message, args) => {
+module.exports = {
+    name: "eval",
+    description: "Run some code.",
+    aliases: ["ar"],
+    channelType: ["text"],
+    usage: (client, message) => {
+        message.channel.send("Usage: `!eval <code>`");
+    },
+    execute: async (client, message, args) => {
 
-    if (message.author.id !== client.config.ownerID) return;
+        if (message.author.id !== client.config.ownerID) return true;
 
-    try {
-        let code = args.join(" ");
-        code = code.replace(/•/g, "");
-        let evaled = eval(code);
+        if (args.length == 0) return false;
 
-        if (typeof evaled !== "string")
-            evaled = require("util").inspect(evaled);
+        try {
+            let code = args.join(" ");
+            code = code.replace(/•/g, "");
+            let evaled = eval(code);
 
-        message.channel.send(clean(evaled), { code: "xl" });
-    } catch (err) {
-        message.channel.send(`\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``);
-        //console.log(err);
+            if (typeof evaled !== "string")
+                evaled = require("util").inspect(evaled);
+
+            message.channel.send(clean(evaled), { code: "xl" });
+        } catch (err) {
+            message.channel.send(`\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``);
+        }
+
+        return true;
+
     }
-
 }

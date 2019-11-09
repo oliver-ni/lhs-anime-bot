@@ -1,32 +1,37 @@
 const moment = require('moment');
 
-exports.run = async (client, message, args) => {
+module.exports = {
+    name: "unmute",
+    description: "Unmute a user.",
+    channelType: ["text"],
+    permissions: ["KICK_MEMBERS"],
+    usage: (client, message) => {
+        message.channel.send("Usage: `!unmute <@user1> [@user2] ...`")
+    },
+    execute: async (client, message, args) => {
 
-    if (args.length == 0) return;
+        if (args.length == 0) return false;
 
-    if (!message.member.hasPermission('KICK_MEMBERS')) {
-        return message.reply("nice try, no.");
-    }
+        const role = message.guild.roles.get("636807183358754816");
 
-    const role = message.guild.roles.get("636807183358754816");
+        client.dbI.ensure("mutes", []);
 
-    client.dbI.ensure("mutes", []);
+        const mutes = client.dbI.get("mutes").filter(m => !Array.from(message.mentions.members.keys()).some(x => x == m.user));
 
-    const mutes = client.dbI.get("mutes").filter(m => !Array.from(message.mentions.members.keys()).some(x => x == m.user));
+        for (const [id, member] of message.mentions.members) {
+            if (!member.roles.has("636807183358754816")) {
+                message.channel.send(`${member} is not currently muted.`);
+                continue;
+            }
 
-    for (const member of message.mentions.members) {
-        if (!member[1].roles.has("636807183358754816")) {
-            message.channel.send(`${member[1]} is not currently muted.`);
-            continue;
+            member.removeRole(role);
+            message.channel.send(`${member} has been unmuted.`);
+            member.user.send("You have been unmuted.");
         }
 
-        member[1].removeRole(role);
-        message.channel.send(`${member[1]} has been unmuted.`);
-        member[1].user.send("You have been unmuted.");
+        client.dbI.set("mutes", mutes);
+
+        return true;
+
     }
-
-    client.dbI.set("mutes", mutes);
-
-    //console.log(client.dbI.get("mutes"));
-
-};
+}

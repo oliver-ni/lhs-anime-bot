@@ -1,18 +1,29 @@
 const Discord = require("discord.js");
 
-exports.run = async (client, message, args) => {
-    
-    const embed = new Discord.RichEmbed();
-    embed.setTitle("**Suggestion**");
-    embed.setDescription(args.join(" "));
-    embed.setAuthor(message.author.tag, message.author.avatarURL)
-    embed.setFooter('LHS Anime Club Bot', client.user.avatarURL);
+module.exports = {
+    name: "suggest",
+    description: "Suggest an improvement for the server.",
+    aliases: ["ar"],
+    channelType: ["text"],
+    usage: (client, message) => {
+        message.channel.send("Usage: `!suggest <suggestion>`");
+    },
+    execute: async (client, message, args) => {
 
-    const suggestion = await client.channels.get("630303882400104448").send(embed);
+        if (args.length == 0) return false;
 
-    message.react("✅");
+        const embed = client.utils.getBaseEmbed(client, message.author);
+        embed.setTitle("**Suggestion**");
+        embed.setDescription(args.join(" "));
 
-    await suggestion.react("👍");
-    await suggestion.react("👎");
+        const suggestion = await client.channels.get("630303882400104448").send(embed);
 
-};
+        message.react("✅");
+
+        await suggestion.react("👍");
+        await suggestion.react("👎");
+
+        return true;
+
+    }
+}
