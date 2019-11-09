@@ -192,8 +192,9 @@ module.exports = {
             await animelist.react("▶");
             await animelist.react("⏭");
 
-        } catch (e) {
+        } catch (err) {
             reply.edit("Unable to load MyAnimeList account.");
+            console.error(err);
         }
 
         return true;

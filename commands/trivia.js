@@ -67,8 +67,9 @@ module.exports = {
             await question.react("🇧");
             await question.react("🇨");
             await question.react("🇩");
-        } catch (e) {
+        } catch (err) {
             reply.edit("Unable to load trivia.")
+            console.error(err);
         }
 
         return true;

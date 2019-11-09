@@ -67,9 +67,10 @@ module.exports = {
                 message.channel.send("Could not find verification code. Please try again. You may need to wait 10-20 seconds for it to update.");
             }
 
-        } catch (e) {
+        } catch (err) {
             question.delete();
             message.channel.send("Unable to link MyAnimeList account.");
+            console.error(err);
         }
 
         return true;

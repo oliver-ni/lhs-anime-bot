@@ -47,9 +47,9 @@ module.exports = async (client, message) => {
             if (!response && command.usage) {
                 command.usage(client, message);
             }
-        } catch (error) {
-            console.error(error);
+        } catch (err) {
             message.channel.send('There was an error trying to execute that command!');
+            console.error(err);
         }
 
     }

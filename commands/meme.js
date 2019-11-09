@@ -28,8 +28,9 @@ module.exports = {
             message.channel.send(
                 new Discord.RichEmbed().setImage(Entities.decode(img[0].source.url)).setColor(0xF1C40F)
             );
-        } catch (e) {
+        } catch (err) {
             reply.edit("Unable to load meme.");
+            console.error(err);
         }
         return true;
     }
