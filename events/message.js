@@ -54,4 +54,12 @@ module.exports = async (client, message) => {
 
     }
 
+    // OTHER
+
+    if (message.content == "monkaS") {
+        message.channel.send({
+            file: "https://i.imgur.com/EPw9mk4.png"
+        });
+    }
+
 };
