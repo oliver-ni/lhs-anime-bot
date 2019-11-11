@@ -2,7 +2,7 @@ const Discord = require("discord.js");
 const moment = require('moment');
 
 module.exports = {
-    name: "savenote",
+    name: "getnote",
     description: "Retrieve a saved note.",
     aliases: ["gn"],
     channelType: ["text"],
