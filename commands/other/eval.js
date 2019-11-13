@@ -8,12 +8,11 @@ const clean = text => {
 }
 
 module.exports = {
-    name: "eval",
+    name: "!eval",
     description: "Run some code.",
-    aliases: ["ar"],
     channelType: ["text"],
     usage: (client, message) => {
-        message.channel.send("Usage: `!eval <code>`");
+        message.channel.send("Usage: `!!eval <code>`");
     },
     execute: async (client, message, args) => {
 

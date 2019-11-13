@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
 const Enmap = require("enmap");
+const file = require("file");
 const fs = require("fs");
 const Jikan = require('jikan-node');
 const Hashids = require('hashids/cjs')
@@ -29,6 +30,8 @@ client.on("ready", () => {
 
     // Fetch role assignment message
     client.channels.get(client.config.rolesChannelID).fetchMessage(client.config.rolesMessageID);
+    client.dbI.ensure("mutes", []);
+    client.dbI.ensure("activecodes", []);
 
     // Check for mutes every 10 seconds
     setInterval(() => {
@@ -51,6 +54,25 @@ client.on("ready", () => {
         }
         client.dbI.set("mutes", mutes);
     }, 10000);
+
+    // Check for codes every 1 minute
+    setInterval(() => {
+        const activecodes = client.dbI.get("activecodes");
+        let idx = 0;
+        for (const activecode of activecodes) {
+            const date = moment(activecodes.end);
+            const event = guild.members.get(activecodes.event);
+
+            if (moment().diff(date) >= 0) {
+                mutes.splice(idx);
+                idx--;
+                client.channels.get("644074619556593667").send(`Event **${event}** was deactivated after timer expired.`);
+            }
+
+            idx++;
+        }
+        client.dbI.set("activecodes", newac);
+    }, 60000);
 });
 
 // Load events
@@ -67,13 +89,15 @@ for (const file of eventFiles) {
 
 client.commands = new Enmap();
 
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-
-for (const file of commandFiles) {
-	const command = require(`./commands/${file}`);
-    console.log(`Attempting to load command file ${file}`);
-	client.commands.set(command.name, command);
-}
+file.walk("./commands", (a, dirPath, dirs, files) => {
+    for (const file of files) {
+        console.log(`Attempting to load command file ./${file}`);
+        const command = require(`./${file}`);
+        if (command.hasOwnProperty("name")) {
+            client.commands.set(command.name, command);
+        }
+    }
+});
 
 // Login with token
 

@@ -1,9 +1,4 @@
 const Discord = require("discord.js");
-const axios = require("axios");
-const Entities = require("html-entities").AllHtmlEntities;
-const Jikan = require('jikan-node');
-
-const utils = require("../utils.js");
 
 // Statuses from MAL API
 

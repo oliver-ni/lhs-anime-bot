@@ -1,12 +1,12 @@
 const moment = require('moment');
 
 module.exports = {
-    name: "mute",
+    name: "!mute",
     description: "Mute a user.",
     channelType: ["text"],
-    permissions: ["KICK_MEMBERS"],
+    permissions: ["ADMINISTRATOR"],
     usage: (client, message) => {
-        message.channel.send("Usage: `!mute <@user1> [@user2] ... [duration]`")
+        message.channel.send("Usage: `!!mute <@user1> [@user2] ... [duration]`")
     },
     execute: async (client, message, args) => {
 
