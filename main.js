@@ -60,8 +60,8 @@ client.on("ready", () => {
         const activecodes = client.dbI.get("activecodes");
         let idx = 0;
         for (const activecode of activecodes) {
-            const date = moment(activecodes.end);
-            const event = guild.members.get(activecodes.event);
+            const date = moment(activecode.end);
+            const event = guild.members.get(activecode.event);
 
             if (moment().diff(date) >= 0) {
                 activecodes.splice(idx);
