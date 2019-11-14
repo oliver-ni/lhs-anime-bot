@@ -61,7 +61,7 @@ client.on("ready", () => {
         let idx = 0;
         for (const activecode of activecodes) {
             const date = moment(activecode.end);
-            const event = guild.members.get(activecode.event);
+            const event = activecode.event;
 
             if (moment().diff(date) >= 0) {
                 activecodes.splice(idx);
