@@ -64,14 +64,14 @@ client.on("ready", () => {
             const event = guild.members.get(activecodes.event);
 
             if (moment().diff(date) >= 0) {
-                mutes.splice(idx);
+                activecodes.splice(idx);
                 idx--;
                 client.channels.get("644074619556593667").send(`Event **${event}** was deactivated after timer expired.`);
             }
 
             idx++;
         }
-        client.dbI.set("activecodes", newac);
+        client.dbI.set("activecodes", activecodes);
     }, 60000);
 });
 
