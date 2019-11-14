@@ -21,18 +21,17 @@ module.exports = {
     description: "Retrieve a meme from r/animemes",
     channelType: ["text"],
     execute: async (client, message, args) => {
-        const reply = await message.reply("loading meme...");
+        message.channel.startTyping();
         try {
             let img = await fetchMeme(client); while (img.length == 0) img = await fetchMeme(client);
-            reply.delete();
-            console.log(Entities.decode(img[0].source.url));
             message.channel.send(
                 new Discord.RichEmbed().setImage(Entities.decode(img[0].source.url)).setColor(0xF1C40F)
             );
         } catch (err) {
-            reply.edit("Unable to load meme.");
+            message.channel.send("Unable to load meme.");
             console.error(err);
         }
+        message.channel.stopTyping();
         return true;
     }
 }

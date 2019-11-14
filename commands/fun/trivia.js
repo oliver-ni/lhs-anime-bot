@@ -15,10 +15,9 @@ module.exports = {
     description: "Load a trivia question.",
     channelType: ["text"],
     execute: async (client, message, args) => {
-        const reply = await message.reply("loading question...");
+        message.channel.startTyping();
         try {
             const response = await axios.get("https://opentdb.com/api.php?amount=1&category=31&type=multiple");
-            reply.delete();
 
             const embed = client.utils.getBaseEmbed(client, message.author);
             embed.setTitle("**" + Entities.decode(response.data.results[0].question) + "**")
@@ -68,10 +67,11 @@ module.exports = {
             await question.react("🇨");
             await question.react("🇩");
         } catch (err) {
-            reply.edit("Unable to load trivia.")
+            message.channel.send("Unable to load trivia.")
             console.error(err);
         }
 
+        message.channel.stopTyping();
         return true;
     }
 }
