@@ -19,7 +19,7 @@ client.dbI = new Enmap({name: "db"});               // database of information
 
 client.mal = new Jikan();                           // MyAnimeList API
 client.hashids = new Hashids("LHS Anime Club");     // Unique id generator
-client.after = "";                                  // For meme command
+client.after = {};                                  // For meme command
 
 client.utils = utils;
 
