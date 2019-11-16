@@ -24,7 +24,12 @@ module.exports = {
         message.channel.startTyping();
         try {
             let img = await fetchMeme(client);
-            while (img.is_self || img.over_18) img = await fetchMeme(client);
+            let count = 0;
+            while ((img.is_self || img.over_18) && count < 20) {
+                img = await fetchMeme(client);
+                count++;
+            }
+            if (count == 20) throw "Timed out"
             message.channel.send(
                 new Discord.RichEmbed().setTitle(img.title).setImage(Entities.decode(img.url)).setColor(0xF1C40F)
             );
