@@ -78,8 +78,8 @@ module.exports = {
             const maluser = await client.mal.findUser(malname, "mangalist");
 
             const manga = maluser.manga.sort((a, b) => {
-                if (b.watching_status > a.watching_status) return -1;
-                if (a.watching_status > b.watching_status) return 1;
+                if (b.reading_status > a.reading_status) return -1;
+                if (a.reading_status > b.reading_status) return 1;
                 if (b.score < a.score) return -1;
                 if (a.score < b.score) return 1;
                 if (b.title > a.title) return -1;
@@ -110,6 +110,7 @@ module.exports = {
                     chunk = [];
                     page = [];
                 }
+                // console.log(item)
                 chunk.push(item);
                 length++;
             }
