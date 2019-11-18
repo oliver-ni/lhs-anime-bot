@@ -138,6 +138,7 @@ module.exports = {
                     if (chunk.items.length == 0) continue
                     const txt = chunk.items.map(e => {
                         let name = e.title;
+                        if (e.reading_status == 1) name += ` **${e.read_chapters}/${e.total_chapters}**`
                         if (e.score > 0) name += ` **${e.score}**`
                         return name;
                     }).join("\n")
