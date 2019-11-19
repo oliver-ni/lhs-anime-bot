@@ -30,10 +30,17 @@ module.exports = {
             return true;
         }
 
+        const key = `576586719999033374-${message.author.id}`;
+        if (!client.dbM.has(key, "realname")) {
+            message.channel.send("Please set your real name with `!realname <name>` first.");
+            return true;
+        }
+
         const activecode = activecodes.find(m => m.code == code);
+        const realname = client.dbM.get(key, "realname");
 
         message.channel.send(`Successfully signed into event **${activecode.event}**.`); // 644074619556593667
-        client.channels.get("644074619556593667").send(`${message.author} signed into event **${activecode.event}**`);
+        client.channels.get("644074619556593667").send(`${message.author} **(${realname})** signed into event **${activecode.event}**`);
 
         return true;
 
