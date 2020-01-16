@@ -12,6 +12,11 @@ module.exports = {
 
         if (args.length == 0) return false;
 
+        if (args.join(" ").toLowerCase().includes("oliver") && args.join(" ").toLowerCase().includes("pillow")) {
+            message.channel.send("please don't")
+            return true;
+        }
+
         const embed = client.utils.getBaseEmbed(client, message.author);
         embed.setTitle("**Suggestion**");
         embed.setDescription(args.join(" "));
