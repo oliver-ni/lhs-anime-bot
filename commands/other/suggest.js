@@ -12,7 +12,7 @@ module.exports = {
 
         if (args.length == 0) return false;
 
-        if (args.join(" ").toLowerCase().includes("oliver") && args.join(" ").toLowerCase().includes("pillow")) {
+        if (args.join("").toLowerCase().includes("oliver") && args.join(" ").toLowerCase().includes("pillow")) {
             message.channel.send("please don't")
             return true;
         }

@@ -18,20 +18,20 @@ module.exports = async (client, message) => {
         const curLevel = Math.floor(0.1 * Math.sqrt(client.dbM.get(key, "points")));
 
         if (client.dbM.get(key, "level") < curLevel) {
-          message.reply(`you are now level **${curLevel}**!`);
-          client.dbM.set(key, curLevel, "level");
+            message.reply(`you are now level **${curLevel}**!`);
+            client.dbM.set(key, curLevel, "level");
         }
     }
 
     // COMMANDS
-  
+
     if (message.content.startsWith(client.config.prefix)) {
-  
+
         const args = message.content.slice(client.config.prefix.length).trim().split(/ +/g);
         const commandName = args.shift().toLowerCase();
-    
+
         const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
-        
+
         if (!command) return;
 
         if (!command.channelType.includes(message.channel.type)) {
