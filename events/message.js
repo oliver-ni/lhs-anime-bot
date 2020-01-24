@@ -58,7 +58,7 @@ module.exports = async (client, message) => {
 
     if (message.content == "monkaS") {
         message.channel.send({
-            file: "https://i.imgur.com/EPw9mk4.png"
+            file: "https://i.kym-cdn.com/entries/icons/original/000/022/713/MonkaSSS.jpg"
         });
     }
 
