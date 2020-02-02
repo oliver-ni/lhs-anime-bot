@@ -70,13 +70,28 @@ class Music {
     async play() {
         while (true) {
             this.resetSongs();
-            let [songUrl, songStream] = await this.getSong(this.songs[0]);
-            for (let idx = 0; idx < this.songs.length; idx++) {
-                this.nowPlaying(this.songs[idx], songUrl);
-                [songUrl, songStream] = (await Promise.all([
-                    this.getSong(this.songs[idx + 1]),
-                    this.playUrl(songUrl, songStream)
-                ]))[0];
+            let idx = 0;
+            let songUrl, songStream;
+            while (true) {
+                try {
+                    [songUrl, songStream] = await this.getSong(this.songs[0]);
+                    break;
+                } catch {
+                    idx++;
+                }
+            }
+            for (; idx < this.songs.length; idx++) {
+                while (true) {
+                    try {
+                        this.nowPlaying(this.songs[idx], songUrl);
+                        [songUrl, songStream] = (await Promise.all([
+                            this.getSong(this.songs[idx + 1]),
+                            this.playUrl(songUrl, songStream)
+                        ]))[0];
+                    } catch {
+                        idx++;
+                    }
+                }
             }
         }
     }
