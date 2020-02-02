@@ -88,6 +88,7 @@ class Music {
                             this.getSong(this.songs[idx + 1]),
                             this.playUrl(songUrl, songStream)
                         ]))[0];
+                        break;
                     } catch {
                         idx++;
                     }
