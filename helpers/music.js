@@ -36,7 +36,7 @@ class Music {
         const anime = stripHtml(song.anime_title || song.anime_englishTitle || song.anime_japaneseTitle);
 
         const songs = await ytsr(`${title} ${artist} ${anime}`, { limit: 1 });
-        return songs.items[0].link, ytdl(songs.items[0].link);
+        return [songs.items[0].link, ytdl(songs.items[0].link)];
     }
 
     nowPlaying(song, url) {
