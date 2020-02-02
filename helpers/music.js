@@ -17,7 +17,6 @@ class Music {
 
     constructor(client) {
         this.client = client;
-        this.resetSongs();
     }
 
     resetSongs() {
@@ -69,13 +68,16 @@ class Music {
     }
 
     async play() {
-        let [songUrl, songStream] = await this.getSong(this.songs[0]);
-        for (let idx = 0; idx < this.songs.length; idx++) {
-            this.nowPlaying(this.songs[idx], songUrl);
-            [songUrl, songStream] = (await Promise.all([
-                this.getSong(this.songs[idx + 1]),
-                this.playUrl(songUrl, songStream)
-            ]))[0];
+        while (true) {
+            this.resetSongs();
+            let [songUrl, songStream] = await this.getSong(this.songs[0]);
+            for (let idx = 0; idx < this.songs.length; idx++) {
+                this.nowPlaying(this.songs[idx], songUrl);
+                [songUrl, songStream] = (await Promise.all([
+                    this.getSong(this.songs[idx + 1]),
+                    this.playUrl(songUrl, songStream)
+                ]))[0];
+            }
         }
     }
 }
