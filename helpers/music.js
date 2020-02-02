@@ -60,7 +60,7 @@ class Music {
     playUrl(url, stream) {
         return new Promise((resolve, reject) => {
             console.log("Playing " + url);
-            const dispatcher = this.connection.playStream(songStream);
+            const dispatcher = this.connection.playStream(stream);
             dispatcher.on("end", (msg) => {
                 console.log(msg)
                 resolve();
