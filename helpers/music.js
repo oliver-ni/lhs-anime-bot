@@ -64,6 +64,9 @@ class Music {
                 console.log(msg)
                 resolve();
             });
+            dispatcher.on("error", (err) => {
+                console.err(err);
+            });
         });
     }
 

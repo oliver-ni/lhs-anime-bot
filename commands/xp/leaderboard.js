@@ -18,7 +18,10 @@ module.exports = {
 
             for (let i = start; i < start + 5 && i < server.length; i++) {
                 const user = server[i];
-                embed.addField(`**${i + 1}. ${client.users.get(user.user).tag}**`, `${user.points} (level ${user.level})`);
+                if (client.users.get(user.user))
+                    embed.addField(`**${i + 1}. ${client.users.get(user.user).tag}**`, `${user.points} (level ${user.level})`);
+                else
+                    embed.addField(`**${i + 1}. Unknown User ${user.user}**`, `${user.points} (level ${user.level})`);
             }
             return embed;
         }

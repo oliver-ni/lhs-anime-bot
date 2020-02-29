@@ -12,7 +12,6 @@
     "better-sqlite3": "^5.4.3",
     "discord.js": "^11.5.1",
     "enmap": "^5.1.2",
-    "ffmpeg-static": "^4.0.0",
     "file": "^0.2.2",
     "hashids": "^2.0.1",
     "html-entities": "^1.2.1",

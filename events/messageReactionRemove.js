@@ -8,11 +8,14 @@ const roles = {
     "634247319516086272": "634264973211860995", // Mudae
     "634250594902736896": "634265033597255692", // Pokecord
     "627723787105992725": "635242440294400000", // Gay
+    "🔫": "683140728683364434",
+    "📖": "683135069983866893",
+    "🎮": "683140730444578841",
 }
 
 module.exports = (client, reaction, user) => {
     if (reaction.message.id == client.config.rolesMessageID) {
-        const role = reaction.message.guild.roles.get(roles[reaction.emoji.id]);
+        const role = reaction.message.guild.roles.get(roles[reaction.emoji.id || reaction.emoji.name]);
         reaction.message.guild.members.get(user.id).removeRole(role);
     }
 };

@@ -1,4 +1,5 @@
 const Music = require("../helpers/music");
+const moment = require("moment");
 
 module.exports = async (client) => {
 
@@ -51,7 +52,7 @@ module.exports = async (client) => {
     }, 60000);
 
     // Join voice channel
-    const music = new Music(client);
-    await music.join();
-    music.play();
+    // const music = new Music(client);
+    // await music.join();
+    // music.play();
 };

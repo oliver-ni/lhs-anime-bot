@@ -1,5 +1,9 @@
 module.exports = async (client, message) => {
 
+    console.log("#" + message.channel.name, message.author.tag, message.content);
+
+    if (message.content.includes("94wO7K0DlzU")) return message.delete();
+
     if (message.author.bot) return;
 
     // XP
