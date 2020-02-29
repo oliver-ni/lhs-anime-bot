@@ -14,8 +14,14 @@ const roles = {
 }
 
 module.exports = (client, reaction, user) => {
-    console.log(reaction.emoji)
-    console.log(reaction.emoji.id || reaction.emoji.name)
+    if (reaction.emoji.name == "📌") {
+        const number = reaction.users.filter(u => {
+            return !reaction.message.guild.member(u.id).roles.some(role => role.name === "Alt");
+        }).size;
+        if (number >= 5 && !reaction.message.pinned && reaction.message.pinnable) {
+            reaction.message.pin();
+        }
+    }
     if (reaction.message.id == client.config.rolesMessageID) {
         const role = reaction.message.guild.roles.get(roles[reaction.emoji.id || reaction.emoji.name]);
         reaction.message.guild.members.get(user.id).addRole(role);
