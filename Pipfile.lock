@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "d0a30811e3344d138e202fb468952c3de27685bc4b683ea7d72e5860c11f6e30"
+            "sha256": "7fee3ed36d0c87830af6e1ed775fd111c9ac857c3ddb48bb2faa470dbd6bb6e4"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -67,6 +67,14 @@
                 "sha256:a068a21ceac8a4d63dbfd964670474107f541babbd2250d61922f029858365fa"
             ],
             "version": "==2.9"
+        },
+        "mongoengine": {
+            "hashes": [
+                "sha256:65f6cc48cbaac5ecd518dcec725d9c312286796510a9d93a4388a53811a294b9",
+                "sha256:6796df3f7458fb1643812c0b58ccad201da0af935ddd4159604c5ca769b9abb6"
+            ],
+            "index": "pypi",
+            "version": "==0.19.1"
         },
         "multidict": {
             "hashes": [
@@ -150,7 +158,6 @@
                 "sha256:e5c54f04ca42bbb5153aec5d4f2e3d9f81e316945220ac318abd4083308143f5",
                 "sha256:f96333f9d2517c752c20a35ff95de5fc2763ac8cdb1653df0f6f45d281620606"
             ],
-            "index": "pypi",
             "version": "==3.10.1"
         },
         "python-dotenv": {
@@ -160,6 +167,13 @@
             ],
             "index": "pypi",
             "version": "==0.12.0"
+        },
+        "six": {
+            "hashes": [
+                "sha256:236bdbdce46e6e6a3d61a337c0f8b763ca1e8717c03b369e87a7ec7ce1319c0a",
+                "sha256:8f3cd2e254d8f793e7f3d6d9df77b92252b52637291d0f0da013c76ea2724b6c"
+            ],
+            "version": "==1.14.0"
         },
         "websockets": {
             "hashes": [

@@ -1,30 +1,29 @@
 from discord.ext import commands
 from dotenv import load_dotenv
-from pymongo import MongoClient
+import mongoengine
 import os
 
-from cogs import Administration, Bot
+from cogs import *
 
-# Instantiate MongoDB
+# Load environment variables
 
-client = MongoClient(
-    host=os.getenv("DATABASE_HOST"),
-    port=int(os.getenv("DATABASE_PORT"))
-)
+load_dotenv()
 
-db = client[os.getenv("DATABASE_NAME")]
+# Load MongoDB
+
+mongoengine.connect("lhs_moe")
 
 # Instantiate Discord Bot
 
 bot = commands.Bot(command_prefix='>')
 
-bot.add_cog(Administration(bot, db))
-bot.add_cog(Bot(bot, db))
+bot.add_cog(Administration(bot))
+bot.add_cog(Bot(bot))
+bot.add_cog(Economy(bot))
 
 # Run Discord Bot
 
 try:
-    load_dotenv()
     bot.run(os.getenv("BOT_TOKEN"))
 except KeyboardInterrupt:
     bot.logout()

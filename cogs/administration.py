@@ -1,19 +1,17 @@
 from discord.ext import commands
 import discord
-import pymongo
 
 
 class Administration(commands.Cog):
     """Commands for server admins."""
 
-    def __init__(self, bot: commands.Bot, db: pymongo.database.Database):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.db = db
 
     @commands.command()
     @commands.guild_only()
     @commands.check_any(commands.is_owner(), commands.has_permissions(administrator=True))
-    async def mute(self, ctx: commands.Context, member: discord.Member, duration: str):
+    async def mute(self, ctx: commands.Context, member: discord.Member):
         """Mute a member."""
         try:
             if (role := next(filter(lambda x: x.name == "Muted", ctx.guild.roles))) not in member.roles:

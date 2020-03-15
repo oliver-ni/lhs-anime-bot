@@ -10,7 +10,7 @@ autopep8 = "*"
 discord-py = "*"
 pycodestyle = {git = "https://github.com/PyCQA/pycodestyle.git",ref = "master"}
 python-dotenv = "*"
-pymongo = "*"
+mongoengine = "*"
 
 [requires]
 python_version = "3.8"
