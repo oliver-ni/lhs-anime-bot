@@ -8,6 +8,10 @@ class Administration(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
+    @property
+    def db(self):
+        return self.bot.get_cog("Database")
+
     @commands.command()
     @commands.guild_only()
     @commands.check_any(commands.is_owner(), commands.has_permissions(administrator=True))

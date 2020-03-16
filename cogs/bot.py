@@ -1,8 +1,5 @@
 from discord.ext import commands
 import discord
-import mongoengine
-
-from . import models
 
 
 class Bot(commands.Cog):
@@ -10,6 +7,10 @@ class Bot(commands.Cog):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+
+    @property
+    def db(self):
+        return self.bot.get_cog("Database")
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -20,8 +21,7 @@ class Bot(commands.Cog):
         if message.author.bot:
             return
 
-        models.Member.objects(id=message.author.id).update(
-            upsert=True, inc__xp=1)
+        self.db.update_member(message.author, inc__xp=1)
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
