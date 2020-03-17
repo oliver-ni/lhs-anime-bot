@@ -1,6 +1,7 @@
 from discord.ext import commands
 import discord
 import mongoengine
+import datetime
 
 from . import models
 
@@ -19,3 +20,9 @@ class Database(commands.Cog):
 
     def update_member(self, member: discord.Member, **kwargs):
         models.Member.objects(id=member.id).update_one(upsert=True, **kwargs)
+
+    def create_temp_action(self, member: discord.Member, action: str, duration: datetime.timedelta):
+        data = models.TempAction(member=self.fetch_member(member), guild=member.guild.id,
+                                 action=action, expires=datetime.datetime.now() + duration)
+        data.save()
+        return data

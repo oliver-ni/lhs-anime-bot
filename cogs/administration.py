@@ -1,5 +1,10 @@
-from discord.ext import commands
+from discord.ext import tasks, commands
 import discord
+import humanfriendly
+import datetime
+import re
+
+from . import models
 
 
 class Administration(commands.Cog):
@@ -7,6 +12,7 @@ class Administration(commands.Cog):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.check_actions.start()
 
     @property
     def db(self):
@@ -15,28 +21,73 @@ class Administration(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @commands.check_any(commands.is_owner(), commands.has_permissions(administrator=True))
-    async def mute(self, ctx: commands.Context, member: discord.Member):
+    async def mute(self, ctx: commands.Context, member: discord.Member, *, duration: str = None):
         """Mute a member."""
         try:
-            if (role := next(filter(lambda x: x.name == "Muted", ctx.guild.roles))) not in member.roles:
-                await ctx.send(f"**{member}** has been muted.")
-                await member.send("You have been muted.")
-                await member.add_roles(role)
-            else:
-                await ctx.send(f"**{member}** is already muted...")
+            role = next(filter(lambda x: x.name == "Muted", ctx.guild.roles))
         except StopIteration:
-            await ctx.send("Could not find a role named **Muted**.")
+            return await ctx.send("Could not find a role named **Muted**.")
+
+        if role in member.roles:
+            return await ctx.send(f"**{member}** is already muted...")
+
+        if duration is None:
+            await member.add_roles(role)
+            await ctx.send(f"**{member}** has been muted.")
+            await member.send("You have been muted.")
+        else:
+            total = datetime.timedelta()
+
+            if (r := re.search(r"(\d+)\s*d", duration)) is not None:
+                total += datetime.timedelta(days=int(r.group(1)))
+
+            if (r := re.search(r"(\d+)\s*h", duration)) is not None:
+                total += datetime.timedelta(hours=int(r.group(1)))
+
+            if (r := re.search(r"(\d+)\s*m", duration)) is not None:
+                total += datetime.timedelta(minutes=int(r.group(1)))
+
+            self.db.create_temp_action(member, "mute", total)
+
+            await member.add_roles(role)
+            await ctx.send(f"**{member}** has been muted for **{humanfriendly.format_timespan(total)}.**")
+            await member.send(f"You have been muted for **{humanfriendly.format_timespan(total)}.**")
+
+    @tasks.loop(seconds=5)
+    async def check_actions(self):
+        actions = models.TempAction.objects().order_by("expires")
+        now = datetime.datetime.now()
+        for action in actions:
+            if action.action == "mute" and action.expires <= now:
+                try:
+                    guild = self.bot.get_guild(action.guild)
+                    member = guild.get_member(action.member.id)
+                    role = next(
+                        filter(lambda x: x.name == "Muted", guild.roles))
+                except AttributeError:
+                    continue
+
+                await member.remove_roles(role)
+                await member.send(f"You have been unmuted.")
+                action.delete()
+        pass
+
+    @check_actions.before_loop
+    async def before_check_actions(self):
+        await self.bot.wait_until_ready()
 
     @commands.command()
     @commands.guild_only()
     @commands.check_any(commands.is_owner(), commands.has_permissions(administrator=True))
-    async def unmute(self, ctx: commands.Context, *, member: discord.Member):
+    async def unmute(self, ctx: commands.Context, member: discord.Member):
         """Unmute a member."""
         try:
             if (role := next(filter(lambda x: x.name == "Muted", ctx.guild.roles))) in member.roles:
+                models.TempAction.objects(member=self.db.fetch_member(member)).delete()
+                await member.remove_roles(role)
+
                 await ctx.send(f"**{member}** has been unmuted.")
                 await member.send("You have been unmuted.")
-                await member.remove_roles(role)
             else:
                 await ctx.send(f"**{member}** is not currently muted...")
         except StopIteration:

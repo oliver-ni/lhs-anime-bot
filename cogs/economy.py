@@ -87,7 +87,7 @@ class Economy(commands.Cog):
             member = ctx.author
 
         if user is None:
-            await ctx.send(f"You balance is **¥{self.balance(member)}**.")
+            await ctx.send(f"Your balance is **¥{self.balance(member)}**.")
         else:
             await ctx.send(f"**{member}**'s balance is **¥{self.balance(member)}**.")
 

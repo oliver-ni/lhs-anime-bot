@@ -22,6 +22,7 @@ bot.add_cog(Administration(bot))
 bot.add_cog(Bot(bot))
 bot.add_cog(Database(bot))
 bot.add_cog(Economy(bot))
+bot.add_cog(Fun(bot))
 
 # Run Discord Bot
 
