@@ -46,7 +46,7 @@ class Economy(commands.Cog):
 
         def get_page(x: int):
             embed = discord.Embed(
-                title="**XP Leaderboard**",
+                title="**XP Leaderboard (testing)**",
                 description="Our server's most active members.",
                 color=0x8E44AD
             )
