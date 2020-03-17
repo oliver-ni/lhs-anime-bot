@@ -36,9 +36,9 @@ class Economy(commands.Cog):
         data = self.db.fetch_member(member)
 
         if user is None:
-            await ctx.send(f"You have **{data.xp}** xp.")
+            await ctx.send(f"You have **{data.xp}** xp points.")
         else:
-            await ctx.send(f"**{member}** has **{data.xp}** xp.")
+            await ctx.send(f"**{member}** has **{data.xp}** xp points.")
 
     @commands.command(aliases=["leaderboard", "lb"])
     async def top(self, ctx: commands.Context):
