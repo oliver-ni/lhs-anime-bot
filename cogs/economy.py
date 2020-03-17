@@ -47,7 +47,7 @@ class Economy(commands.Cog):
         def get_page(x: int):
             embed = discord.Embed(
                 title="**XP Leaderboard**",
-                description="Our most active members.",
+                description="Our server's most active members.",
                 color=0x8E44AD
             )
             for idx, member in enumerate(top[x*5:x*5+5], start=x*5):
