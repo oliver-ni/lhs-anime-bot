@@ -16,13 +16,12 @@ class Fun(commands.Cog):
         return self.bot.get_cog("Database")
 
     def fetch_meme(self):
-        resp = requests.get("https://www.reddit.com/r/animemes.json", data={
+        data = requests.get("https://www.reddit.com/r/animemes.json", params={
             "limit": 1,
             "after": self.after
         }, headers={"user-agent": "lhs-moe/rewrite"}).json()
-        print(resp)
-        self.after = resp["data"]["after"]
-        return resp["data"]["children"][0]["data"]
+        self.after = data["data"]["after"]
+        return data["data"]["children"][0]["data"]
 
     @commands.command(aliases=["animeme"])
     async def meme(self, ctx: commands.Context):
@@ -32,8 +31,6 @@ class Fun(commands.Cog):
             count = 0
             while meme["is_self"] or meme["is_video"] or meme["over_18"] and (count := count + 1) <= 20:
                 meme = self.fetch_meme()
-
-            print(count)
 
             embed = discord.Embed(
                 title=meme["title"],
