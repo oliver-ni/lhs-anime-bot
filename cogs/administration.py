@@ -68,7 +68,7 @@ class Administration(commands.Cog):
                     continue
 
                 await member.remove_roles(role)
-                await member.send(f"You have been unmuted.")
+                await member.send("You have been unmuted.")
                 action.delete()
         pass
 
