@@ -22,7 +22,7 @@ class Action:
 
     @classmethod
     async def convert(cls, ctx: commands.Context, argument: str):
-        if argument is None:
+        if argument is None or argument == "nothing":
             return cls(target_type="nothing", user=ctx.author)
 
         try:
