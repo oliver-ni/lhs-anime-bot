@@ -30,4 +30,4 @@ class Bot(commands.Cog):
         elif not isinstance(error, commands.CommandNotFound):
             await ctx.send(f"**Error:** {error}")
         
-        print(error)
+        raise error

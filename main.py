@@ -17,11 +17,13 @@ print(os.getenv("COMMAND_PREFIX"))
 bot = commands.Bot(command_prefix=os.getenv("COMMAND_PREFIX"),
                    help_command=commands.MinimalHelpCommand())
 
+bot.add_cog(Actions(bot))
 bot.add_cog(Administration(bot))
 bot.add_cog(Bot(bot))
 bot.add_cog(Database(bot))
 bot.add_cog(Economy(bot))
 bot.add_cog(Fun(bot))
+
 
 @bot.event
 async def on_message(message):
@@ -36,7 +38,7 @@ async def on_message(message):
             ignore, delete = ignore or i, delete or d
         except AttributeError:
             continue
-    
+
     if delete:
         await message.delete()
         return
