@@ -4,7 +4,7 @@ import humanfriendly
 import datetime
 import re
 
-from . import models
+from . import models, database
 
 
 class Administration(commands.Cog):
@@ -15,8 +15,25 @@ class Administration(commands.Cog):
         self.check_actions.start()
 
     @property
-    def db(self):
+    def db(self) -> database.Database:
         return self.bot.get_cog("Database")
+
+    async def check_message(self, ctx: commands.Context):
+        ignore = False
+        delete = False
+
+        if self.db.fetch_member(ctx.author).muted:
+            try:
+                role = next(filter(lambda x: x.name ==
+                                   "Muted", ctx.guild.roles))
+                await ctx.author.add_roles(role)
+            except StopIteration:
+                pass
+
+            ignore = True
+            delete = True
+
+        return ignore, delete
 
     @commands.command()
     @commands.guild_only()
@@ -32,6 +49,7 @@ class Administration(commands.Cog):
             return await ctx.send(f"**{member}** is already muted...")
 
         if duration is None:
+            self.db.update_member(member, muted=True)
             await member.add_roles(role)
             await ctx.send(f"**{member}** has been muted.")
             await member.send("You have been muted.")
@@ -48,6 +66,7 @@ class Administration(commands.Cog):
                 total += datetime.timedelta(minutes=int(r.group(1)))
 
             self.db.create_temp_action(member, "mute", total)
+            self.db.update_member(member, muted=True)
 
             await member.add_roles(role)
             await ctx.send(f"**{member}** has been muted for **{humanfriendly.format_timespan(total)}.**")
@@ -67,6 +86,7 @@ class Administration(commands.Cog):
                 except AttributeError:
                     continue
 
+                self.db.update_member(member, muted=False)
                 await member.remove_roles(role)
                 await member.send("You have been unmuted.")
                 action.delete()
@@ -83,7 +103,8 @@ class Administration(commands.Cog):
         """Unmute a member."""
         try:
             if (role := next(filter(lambda x: x.name == "Muted", ctx.guild.roles))) in member.roles:
-                models.TempAction.objects(member=self.db.fetch_member(member)).delete()
+                models.TempAction.objects(
+                    member=self.db.fetch_member(member)).delete()
                 await member.remove_roles(role)
 
                 await ctx.send(f"**{member}** has been unmuted.")

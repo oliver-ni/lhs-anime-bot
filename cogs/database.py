@@ -12,7 +12,7 @@ class Database(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    def fetch_member(self, member: discord.Member):
+    def fetch_member(self, member: discord.Member) -> models.Member:
         try:
             return models.Member.objects.get(id=member.id)
         except mongoengine.DoesNotExist:
@@ -21,7 +21,7 @@ class Database(commands.Cog):
     def update_member(self, member: discord.Member, **kwargs):
         models.Member.objects(id=member.id).update_one(upsert=True, **kwargs)
 
-    def create_temp_action(self, member: discord.Member, action: str, duration: datetime.timedelta):
+    def create_temp_action(self, member: discord.Member, action: str, duration: datetime.timedelta) -> models.TempAction:
         data = models.TempAction(member=self.fetch_member(member), guild=member.guild.id,
                                  action=action, expires=datetime.datetime.now() + duration)
         data.save()

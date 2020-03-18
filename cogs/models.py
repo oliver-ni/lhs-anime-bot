@@ -1,10 +1,11 @@
-from mongoengine import Document, LongField, IntField, StringField, ReferenceField, DateTimeField, CASCADE
+from mongoengine import Document, LongField, IntField, StringField, ReferenceField, DateTimeField, BooleanField, CASCADE
 
 
 class Member(Document):
     id = LongField(primary_key=True, required=True)
     xp = IntField(min_value=0, default=0)
     balance = IntField(min_value=0, default=0)
+    muted = BooleanField(default=False)
 
 
 class TempAction(Document):
