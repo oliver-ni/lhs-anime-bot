@@ -43,20 +43,51 @@ class Action:
 class Eat(Action):
     messages = {
         "nothing": [
-            "{user.mention} sits down and eats **absolutely nothing**."
+            "{user.mention}, you sit down and eats **absolutely nothing**.",
+            "No one:\nAbsolutely no one:\n{user.mention}: *eat*",
+            "{user.mention} doesn't know what to eat...",
         ],
         "item": [
-            "{user.mention} tries to eat **{target}**, but it falls to the ground."
+            "{user.mention} tries to eat **{target}**, but it falls to the ground.",
+            "{user.mention}'s teeth sink into **{target}**. It tastes satisfying."
         ],
         "self": [
-            "{user.mention} might not be the smartest person here..."
+            "{user.mention} might not be the smartest person here...",
+            "{user.mention}, you take a quick bite out of your own forearm—not surprisingly, it hurts."
         ],
         "member": [
-            "{user.mention} takes a big bite out of **{target.mention}**. Yum."
+            "{user.mention} takes a big bite out of {target.mention}. Yum.",
+            "{user.mention}, you sneakily nibble on {target.mention}—they probably didn't even notice."
         ],
         "bot": [
-            "I'm a bot. You can't eat me."
-        ]
+            "I'm a bot. You can't eat me.",
+            "{user.mention}, your jaw clamps down on... wait... nothing, because I'm digital!"
+        ],
+    }
+
+
+class Drink(Action):
+    messages = {
+        "nothing": [
+            "{user.mention}, are you sure you know what drinking is?",
+            "{user.mention}, you stare at your glass full of **nothing**...",
+        ],
+        "item": [
+            "{user.mention} tries to drink **{target}**, but fails.",
+            "{user.mention}'s straw sinks into **{target}**. It tastes satisfying."
+        ],
+        "self": [
+            "{user.mention}, you stab your straw into—wait, you're not a drink!",
+            "{user.mention}, you try to fit yourself in a cup, but just can't do it."
+        ],
+        "member": [
+            "{user.mention}, you grab your lucky straw and empty {target.mention} in one sip.",
+            "{user.mention}, you stab your straw into {target.mention}—and run away as they run after you."
+        ],
+        "bot": [
+            "{user.mention}, you try to drink *me*, but I dodge your straw..",
+            "{user.mention}, you stab your straw into... wait... nothing, because I'm digital!"
+        ],
     }
 
 
@@ -69,4 +100,9 @@ class Actions(commands.Cog):
     @commands.command()
     async def eat(self, ctx: commands.Context, *, target: str = None):
         action = await Eat.convert(ctx, target)
+        await ctx.send(action.compute())
+
+    @commands.command()
+    async def drink(self, ctx: commands.Context, *, target: str = None):
+        action = await Drink.convert(ctx, target)
         await ctx.send(action.compute())
