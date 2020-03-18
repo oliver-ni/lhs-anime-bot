@@ -5,12 +5,9 @@ import os
 
 from cogs import *
 
-# Load environment variables
+# Setup
 
 load_dotenv()
-
-# Load MongoDB
-
 mongoengine.connect("lhs_moe")
 
 # Instantiate Discord Bot
