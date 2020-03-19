@@ -81,12 +81,12 @@ class Drink(Action):
             "{user.mention}, you try to fit yourself in a cup, but just can't do it."
         ],
         "member": [
-            "{user.mention}, you grab your lucky straw and empty {target.mention} in one sip.",
+            "{user.mention} grabs a lucky straw and empties {target.mention} in one sip.",
             "{user.mention}, you stab your straw into {target.mention}—and run away as they run after you."
         ],
         "bot": [
             "{user.mention}, you try to drink *me*, but I dodge your straw..",
-            "{user.mention}, you stab your straw into... wait... nothing, because I'm digital!"
+            "{user.mention} stabs a straw into... wait... nothing, because I'm digital!"
         ],
     }
 
