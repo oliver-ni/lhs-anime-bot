@@ -105,6 +105,7 @@ class Administration(commands.Cog):
             if (role := next(filter(lambda x: x.name == "Muted", ctx.guild.roles))) in member.roles:
                 models.TempAction.objects(
                     member=self.db.fetch_member(member)).delete()
+                self.db.update_member(member, muted=False)
                 await member.remove_roles(role)
 
                 await ctx.send(f"**{member}** has been unmuted.")
