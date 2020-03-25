@@ -103,8 +103,8 @@ class Actions(commands.Cog):
         action = await Eat.convert(ctx, target)
         message = action.compute()
         if "@everyone" in message or "@here" in message:
-            await self.bot.get_cog("Administration").mute_member(ctx.author, datetime.timedelta(minutes=5))
-            await ctx.send("You have been muted for **5 minutes**.")
+            await self.bot.get_cog("Administration").mute_member(ctx.author, datetime.timedelta(minutes=30))
+            await ctx.send("You have been muted for **30 minutes**.")
         else:
             await ctx.send(action.compute())
 
@@ -112,7 +112,7 @@ class Actions(commands.Cog):
     async def drink(self, ctx: commands.Context, *, target: str = None):
         action = await Drink.convert(ctx, target)
         if "@everyone" in message or "@here" in message:
-            await self.bot.get_cog("Administration").mute_member(ctx.author, datetime.timedelta(minutes=5))
-            await ctx.send("You have been muted for **5 minutes**.")
+            await self.bot.get_cog("Administration").mute_member(ctx.author, datetime.timedelta(minutes=30))
+            await ctx.send("You have been muted for **30 minutes**.")
         else:
             await ctx.send(action.compute())
