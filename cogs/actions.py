@@ -111,6 +111,7 @@ class Actions(commands.Cog):
     @commands.command()
     async def drink(self, ctx: commands.Context, *, target: str = None):
         action = await Drink.convert(ctx, target)
+        message = action.compute()
         if "@everyone" in message or "@here" in message:
             await self.bot.get_cog("Administration").mute_member(ctx.author, datetime.timedelta(minutes=30))
             await ctx.send("You have been muted for **30 minutes**.")
