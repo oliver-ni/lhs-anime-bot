@@ -51,7 +51,7 @@ class Administration(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    async def test(self, ctx: commands.Context, member: discord.Member):
+    async def audit(self, ctx: commands.Context, member: discord.Member):
         data = models.LoggedAction.objects(
             member=self.db.fetch_member(member)).order_by("-time")
 
