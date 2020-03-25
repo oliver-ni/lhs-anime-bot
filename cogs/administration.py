@@ -65,13 +65,13 @@ class Administration(commands.Cog):
             for idx, action in enumerate(data[x*5:x*5+5], start=x*5):
                 if action.action == "edit":
                     embed.add_field(
-                        name=f"**Edited message**",
+                        name=f"**Edited message in #{self.bot.get_channel(action.channel)}**",
                         value=f"– **Before:** {action.before}\n– **After:** {action.after}\n– at *{action.time:%m-%d-%y %I:%M %p}*",
                         inline=False
                     )
                 elif action.action == "delete":
                     embed.add_field(
-                        name=f"**Deleted message**",
+                        name=f"**Deleted message in #{self.bot.get_channel(action.channel)}**",
                         value=f"– **Message:** {action.before}\n– at *{action.time:%m-%d-%y %I:%M %p}*",
                         inline=False
                     )
