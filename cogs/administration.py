@@ -55,12 +55,13 @@ class Administration(commands.Cog):
         data = models.LoggedAction.objects(
             member=self.db.fetch_member(member)).order_by("-time")
 
-        def get_page(x: int):
+        def get_page(x: int, pages: int):
             embed = discord.Embed(
                 title=f"**Auditing {member}**",
                 description="Recently deleted and edited messages",
                 color=0x8E44AD
             )
+            embed.set_footer(text=f"Page {x + 1}/{pages}")
             for idx, action in enumerate(data[x*5:x*5+5], start=x*5):
                 if action.action == "edit":
                     embed.add_field(
@@ -78,7 +79,7 @@ class Administration(commands.Cog):
 
         page = 0
         pages = math.ceil(len(data) / 5)
-        response = await ctx.send(embed=get_page(page))
+        response = await ctx.send(embed=get_page(page, pages))
 
         await response.add_reaction("⏮")
         await response.add_reaction("◀")
@@ -95,7 +96,7 @@ class Administration(commands.Cog):
                     "⏭️": pages - 1,
                 }[reaction.emoji] % pages
                 await reaction.remove(user)
-                await response.edit(embed=get_page(page))
+                await response.edit(embed=get_page(page, pages))
         except asyncio.TimeoutError:
             await response.add_reaction("🛑")
 

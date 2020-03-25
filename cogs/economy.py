@@ -44,12 +44,13 @@ class Economy(commands.Cog):
     async def top(self, ctx: commands.Context):
         top = models.Member.objects().order_by("-xp")
 
-        def get_page(x: int):
+        def get_page(x: int, pages: int):
             embed = discord.Embed(
                 title="**XP Leaderboard (testing)**",
                 description="Our server's most active members.",
                 color=0x8E44AD
             )
+            embed.set_footer(text=f"Page {x + 1}/{pages}")
             for idx, member in enumerate(top[x*5:x*5+5], start=x*5):
                 embed.add_field(
                     name=f"**{idx + 1}. {ctx.guild.get_member(member.id)}**",
@@ -60,7 +61,7 @@ class Economy(commands.Cog):
 
         page = 0
         pages = math.ceil(len(top) / 5)
-        response = await ctx.send(embed=get_page(page))
+        response = await ctx.send(embed=get_page(page, pages))
 
         await response.add_reaction("⏮")
         await response.add_reaction("◀")
@@ -77,7 +78,7 @@ class Economy(commands.Cog):
                     "⏭️": pages - 1,
                 }[reaction.emoji] % pages
                 await reaction.remove(user)
-                await response.edit(embed=get_page(page))
+                await response.edit(embed=get_page(page, pages))
         except asyncio.TimeoutError:
             await response.add_reaction("🛑")
 
