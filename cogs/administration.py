@@ -35,22 +35,43 @@ class Administration(commands.Cog):
 
         return ignore, delete
 
+    async def mute_member(self, member: discord.Member, duration: datetime.timedelta = None):
+        try:
+            role = next(filter(lambda x: x.name ==
+                               "Muted", member.guild.roles))
+        except StopIteration:
+            raise Exception("Could not find a role named **Muted**.")
+
+        if role in member.roles:
+            raise Exception(f"**{member}** is already muted.")
+
+        if duration is None:
+            self.db.update_member(member, muted=True)
+            await member.add_roles(role)
+        else:
+            self.db.create_temp_action(member, "mute", duration)
+            self.db.update_member(member, muted=True)
+            await member.add_roles(role)
+
+    async def unmute_member(self, member: discord.Member):
+        try:
+            if (role := next(filter(lambda x: x.name == "Muted", member.guild.roles))) in member.roles:
+                models.TempAction.objects(
+                    member=self.db.fetch_member(member)).delete()
+                self.db.update_member(member, muted=False)
+                await member.remove_roles(role)
+            else:
+                raise Exception(f"**{member}** is not currently muted...")
+        except StopIteration:
+            raise Exception("Could not find a role named **Muted**.")
+
     @commands.command()
     @commands.guild_only()
     @commands.check_any(commands.is_owner(), commands.has_permissions(administrator=True))
     async def mute(self, ctx: commands.Context, member: discord.Member, *, duration: str = None):
         """Mute a member."""
-        try:
-            role = next(filter(lambda x: x.name == "Muted", ctx.guild.roles))
-        except StopIteration:
-            return await ctx.send("Could not find a role named **Muted**.")
-
-        if role in member.roles:
-            return await ctx.send(f"**{member}** is already muted...")
-
         if duration is None:
-            self.db.update_member(member, muted=True)
-            await member.add_roles(role)
+            await self.mute_member(member)
             await ctx.send(f"**{member}** has been muted.")
             await member.send("You have been muted.")
         else:
@@ -58,19 +79,23 @@ class Administration(commands.Cog):
 
             if (r := re.search(r"(\d+)\s*d", duration)) is not None:
                 total += datetime.timedelta(days=int(r.group(1)))
-
             if (r := re.search(r"(\d+)\s*h", duration)) is not None:
                 total += datetime.timedelta(hours=int(r.group(1)))
-
             if (r := re.search(r"(\d+)\s*m", duration)) is not None:
                 total += datetime.timedelta(minutes=int(r.group(1)))
 
-            self.db.create_temp_action(member, "mute", total)
-            self.db.update_member(member, muted=True)
-
-            await member.add_roles(role)
+            await self.mute_member(member, total)
             await ctx.send(f"**{member}** has been muted for **{humanfriendly.format_timespan(total)}.**")
             await member.send(f"You have been muted for **{humanfriendly.format_timespan(total)}.**")
+
+    @commands.command()
+    @commands.guild_only()
+    @commands.check_any(commands.is_owner(), commands.has_permissions(administrator=True))
+    async def unmute(self, ctx: commands.Context, member: discord.Member):
+        """Unmute a member."""
+        await self.unmute_member(member)
+        await ctx.send(f"**{member}** has been unmuted.")
+        await member.send("You have been unmuted.")
 
     @tasks.loop(seconds=5)
     async def check_actions(self):
@@ -95,25 +120,6 @@ class Administration(commands.Cog):
     @check_actions.before_loop
     async def before_check_actions(self):
         await self.bot.wait_until_ready()
-
-    @commands.command()
-    @commands.guild_only()
-    @commands.check_any(commands.is_owner(), commands.has_permissions(administrator=True))
-    async def unmute(self, ctx: commands.Context, member: discord.Member):
-        """Unmute a member."""
-        try:
-            if (role := next(filter(lambda x: x.name == "Muted", ctx.guild.roles))) in member.roles:
-                models.TempAction.objects(
-                    member=self.db.fetch_member(member)).delete()
-                self.db.update_member(member, muted=False)
-                await member.remove_roles(role)
-
-                await ctx.send(f"**{member}** has been unmuted.")
-                await member.send("You have been unmuted.")
-            else:
-                await ctx.send(f"**{member}** is not currently muted...")
-        except StopIteration:
-            await ctx.send("Could not find a role named **Muted**.")
 
     @commands.command()
     @commands.guild_only()

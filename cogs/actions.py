@@ -1,5 +1,6 @@
 from discord.ext import commands
 import discord
+import datetime
 import random
 
 
@@ -100,9 +101,18 @@ class Actions(commands.Cog):
     @commands.command()
     async def eat(self, ctx: commands.Context, *, target: str = None):
         action = await Eat.convert(ctx, target)
-        await ctx.send(action.compute())
+        message = action.compute()
+        if "@everyone" in message or "@here" in message:
+            await self.bot.get_cog("Administration").mute_member(ctx.author, datetime.timedelta(minutes=5))
+            await ctx.send("You have been muted for **5 minutes**.")
+        else:
+            await ctx.send(action.compute())
 
     @commands.command()
     async def drink(self, ctx: commands.Context, *, target: str = None):
         action = await Drink.convert(ctx, target)
-        await ctx.send(action.compute())
+        if "@everyone" in message or "@here" in message:
+            await self.bot.get_cog("Administration").mute_member(ctx.author, datetime.timedelta(minutes=5))
+            await ctx.send("You have been muted for **5 minutes**.")
+        else:
+            await ctx.send(action.compute())
