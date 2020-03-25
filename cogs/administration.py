@@ -2,6 +2,8 @@ from discord.ext import tasks, commands
 import discord
 import humanfriendly
 import datetime
+import asyncio
+import math
 import re
 
 from . import models, database
@@ -34,6 +36,68 @@ class Administration(commands.Cog):
             delete = True
 
         return ignore, delete
+
+    @commands.Cog.listener()
+    async def on_message_delete(self, message):
+        data = models.LoggedAction(member=self.db.fetch_member(message.author), guild=message.guild.id, channel=message.channel.id,
+                                   action="delete", time=datetime.datetime.now(), before=message.content)
+        data.save()
+
+    @commands.Cog.listener()
+    async def on_message_edit(self, before, after):
+        data = models.LoggedAction(member=self.db.fetch_member(before.author), guild=before.guild.id, channel=before.channel.id,
+                                   action="edit", time=datetime.datetime.now(), before=before.content, after=after.content)
+        data.save()
+
+    @commands.command()
+    @commands.guild_only()
+    async def test(self, ctx: commands.Context, member: discord.Member):
+        data = models.LoggedAction.objects(
+            member=self.db.fetch_member(member)).order_by("-time")
+
+        def get_page(x: int):
+            embed = discord.Embed(
+                title=f"**Auditing {member}**",
+                description="Recently deleted and edited messages",
+                color=0x8E44AD
+            )
+            for idx, action in enumerate(data[x*5:x*5+5], start=x*5):
+                if action.action == "edit":
+                    embed.add_field(
+                        name=f"**Edited message**",
+                        value=f"– **Before:** {action.before}\n– **After:** {action.after}\n– at *{action.time:%m-%d-%y %I:%M %p}*",
+                        inline=False
+                    )
+                elif action.action == "delete":
+                    embed.add_field(
+                        name=f"**Deleted message**",
+                        value=f"– **Message:** {action.before}\n– at *{action.time:%m-%d-%y %I:%M %p}*",
+                        inline=False
+                    )
+            return embed
+
+        page = 0
+        pages = math.ceil(len(data) / 5)
+        response = await ctx.send(embed=get_page(page))
+
+        await response.add_reaction("⏮")
+        await response.add_reaction("◀")
+        await response.add_reaction("▶")
+        await response.add_reaction("⏭️")
+
+        try:
+            while True:
+                reaction, user = await self.bot.wait_for("reaction_add", check=lambda r, u: r.message.id == response.id and not u.bot, timeout=120)
+                page = {
+                    "⏮": 0,
+                    "◀": page - 1,
+                    "▶": page + 1,
+                    "⏭️": pages - 1,
+                }[reaction.emoji] % pages
+                await reaction.remove(user)
+                await response.edit(embed=get_page(page))
+        except asyncio.TimeoutError:
+            await response.add_reaction("🛑")
 
     async def mute_member(self, member: discord.Member, duration: datetime.timedelta = None):
         try:

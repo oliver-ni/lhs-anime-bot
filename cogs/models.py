@@ -13,3 +13,14 @@ class TempAction(Document):
     member = ReferenceField(Member, reverse_delete_rule=CASCADE, required=True)
     action = StringField(choices=("mute", "ban"), required=True)
     expires = DateTimeField(required=True)
+
+
+class LoggedAction(Document):
+    guild = LongField(required=True)
+    channel = LongField(required=True)
+    member = ReferenceField(Member, reverse_delete_rule=CASCADE, required=True)
+    time = DateTimeField(required=True)
+    action = StringField(choices=("edit", "delete"), required=True)
+    before = StringField(required=True)
+    after = StringField()
+
