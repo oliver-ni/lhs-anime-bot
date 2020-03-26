@@ -175,3 +175,12 @@ class Administration(commands.Cog):
             await ctx.send(f"**{user}** has been unbanned.")
         except StopIteration:
             await ctx.send(f"That user is not banned...")
+
+    @commands.command()
+    @commands.guild_only()
+    @commands.check_any(commands.is_owner(), commands.has_permissions(administrator=True))
+    async def purge(self, ctx: commands.Context, amount: int):
+        deleted = await ctx.channel.purge(limit=amount)
+        msg = await ctx.send(f"{ctx.author.mention}, **{len(deleted)}** message{'' if len(deleted) == 1 else 's'} have been deleted from {ctx.channel.mention}.")
+        await asyncio.sleep(2)
+        await msg.delete()
