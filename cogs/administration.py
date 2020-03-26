@@ -1,4 +1,5 @@
 from discord.ext import tasks, commands
+from profanity_filter import ProfanityFilter
 import discord
 import humanfriendly
 import datetime
@@ -16,6 +17,8 @@ class Administration(commands.Cog):
         self.bot = bot
         self.check_actions.start()
 
+        self.pf = ProfanityFilter()
+
     @property
     def db(self) -> database.Database:
         return self.bot.get_cog("Database")
@@ -32,6 +35,10 @@ class Administration(commands.Cog):
             except StopIteration:
                 pass
 
+            ignore = True
+            delete = True
+        
+        if not self.pf.is_clean(ctx.message.content):
             ignore = True
             delete = True
 

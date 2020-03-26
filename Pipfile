@@ -13,6 +13,7 @@ python-dotenv = "*"
 mongoengine = "*"
 requests = "*"
 humanfriendly = "*"
+profanity-filter = "*"
 
 [requires]
 python_version = "3.8"
