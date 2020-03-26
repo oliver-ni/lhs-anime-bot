@@ -23,6 +23,7 @@ bot.add_cog(Bot(bot))
 bot.add_cog(Database(bot))
 bot.add_cog(Economy(bot))
 bot.add_cog(Fun(bot))
+bot.add_cog(Logs(bot))
 
 
 @bot.event

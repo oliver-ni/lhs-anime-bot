@@ -24,3 +24,7 @@ class LoggedAction(Document):
     before = StringField(required=True)
     after = StringField()
 
+
+class GuildSettings(Document):
+    id = LongField(primary_key=True, required=True)
+    allow_profanity = BooleanField(default=True)

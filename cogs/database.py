@@ -12,6 +12,12 @@ class Database(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
+    def fetch_settings(self, guild: discord.Guild) -> models.GuildSettings:
+        try:
+            return models.GuildSettings.objects.get(id=guild.id)
+        except mongoengine.DoesNotExist:
+            return models.GuildSettings.objects.create(id=guild.id)
+
     def fetch_member(self, member: discord.Member) -> models.Member:
         try:
             return models.Member.objects.get(id=member.id)

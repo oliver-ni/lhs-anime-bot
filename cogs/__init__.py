@@ -4,4 +4,5 @@ from .bot import *
 from .database import *
 from .economy import *
 from .fun import *
+from .logs import *
 from .models import *
