@@ -182,5 +182,5 @@ class Administration(commands.Cog):
     async def purge(self, ctx: commands.Context, amount: int):
         deleted = await ctx.channel.purge(limit=amount)
         msg = await ctx.send(f"{ctx.author.mention}, **{len(deleted)}** message{'' if len(deleted) == 1 else 's'} have been deleted from {ctx.channel.mention}.")
-        await asyncio.sleep(2)
+        await asyncio.sleep(5)
         await msg.delete()
