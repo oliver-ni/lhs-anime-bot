@@ -112,9 +112,9 @@ class Bracket(commands.Cog):
 
             votes = [(
                 (match.first, " ".join(
-                    f"<@{key}>" for key, value in match.votes.items() if value)),
-                (match.second, " ".join(
                     f"<@{key}>" for key, value in match.votes.items() if not value)),
+                (match.second, " ".join(
+                    f"<@{key}>" for key, value in match.votes.items() if value)),
             ) for match in matches]
 
             await ctx.message.add_reaction("📫")
