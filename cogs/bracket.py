@@ -111,12 +111,19 @@ class Bracket(commands.Cog):
             matches = models.BracketRound.objects.get(name=name).matches
 
             votes = [(
-                (match.first, " ".join(f"<@{key}>" for key, value in match.votes.items() if value)),
-                (match.second, " ".join(f"<@{key}>" for key, value in match.votes.items() if not value)),
+                (match.first, " ".join(
+                    f"<@{key}>" for key, value in match.votes.items() if value)),
+                (match.second, " ".join(
+                    f"<@{key}>" for key, value in match.votes.items() if not value)),
             ) for match in matches]
 
             await ctx.message.add_reaction("📫")
-            await ctx.author.send(f"Bracket Round **{name}**\n\n" + "\n\n".join(f"**{match[0][0]}:** {match[0][1]}\n**{match[1][0]}:** {match[1][1]}" for match in votes))
+
+            sections = [f"Bracket Round **{name}**"] + [
+                f"**{match[0][0]}:** {match[0][1]}\n**{match[1][0]}:** {match[1][1]}" for match in votes]
+
+            for section in sections:
+                await ctx.author.send(section)
 
         except mongoengine.DoesNotExist:
             await ctx.send(f"Could not find bracket round with name **{name}**.")
