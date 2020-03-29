@@ -20,6 +20,7 @@ bot = commands.Bot(command_prefix=os.getenv("COMMAND_PREFIX"),
 bot.add_cog(Actions(bot))
 bot.add_cog(Administration(bot))
 bot.add_cog(Bot(bot))
+bot.add_cog(Bracket(bot))
 bot.add_cog(Database(bot))
 bot.add_cog(Economy(bot))
 bot.add_cog(Fun(bot))

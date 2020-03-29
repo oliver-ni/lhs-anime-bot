@@ -1,4 +1,4 @@
-from mongoengine import Document, LongField, IntField, StringField, ReferenceField, DateTimeField, BooleanField, CASCADE
+from mongoengine import *
 
 
 class Member(Document):
@@ -27,4 +27,16 @@ class LoggedAction(Document):
 
 class GuildSettings(Document):
     id = LongField(primary_key=True, required=True)
-    allow_profanity = BooleanField(default=True)
+    allow_profanity = BooleanField(default=True, required=True)
+
+
+class BracketMatch(EmbeddedDocument):
+    first = StringField(required=True)
+    second = StringField(required=True)
+    votes = MapField(field=BooleanField())
+
+
+class BracketRound(Document):
+    name = StringField(required=True, unique=True)
+    matches = EmbeddedDocumentListField(BracketMatch)
+    active = BooleanField(default=False, required=True)
