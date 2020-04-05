@@ -52,7 +52,7 @@ class Bracket(commands.Cog):
             await ctx.send(f"Could not find bracket round with name **{name}**.")
 
     @bracket.command(name="deactivate")
-    @commands.check_any(commands.is_owner(), commands.has_permissions(administrator=True))
+    @commands.check_any(commands.is_owner(), commands.has_permissions(administrator=True), lambda ctx: ctx.message.author.id == 193776835451027456)
     async def bracket_deactivate(self, ctx: commands.Context, *, name: str):
         try:
             models.BracketRound.objects.get(name=name).update(active=False)
@@ -143,18 +143,19 @@ class Bracket(commands.Cog):
             return msg.author == ctx.author and isinstance(msg.channel, discord.DMChannel)
 
         for idx, match in enumerate(bracket.matches):
-            await ctx.author.send(f"Match {idx + 1}: **{match.first}** vs. **{match.second}**. Please reply `left`, `right`, or `abstain`.")
+            await ctx.author.send(f"Match {idx + 1}: **{match.first}** vs. **{match.second}**. Please reply `left` or `right`.")
 
             try:
                 vote = await self.bot.wait_for("message", check=check, timeout=60)
-                while vote.content not in ["left", "right", "abstain"]:
-                    await ctx.author.send("Please write `left`, `right`, or `abstain`.")
+                while vote.content not in ["left", "right"]:
+                    await ctx.author.send("Please write `left` or `right`.")
                     vote = await self.bot.wait_for("message", check=check, timeout=60)
             except asyncio.TimeoutError:
                 await ctx.author.send("You took too long, and your vote was not saved. Please try again.")
                 return
 
             if vote.content == "abstain":
+                
                 try:
                     del match.votes[str(ctx.author.id)]
                 except KeyError:
