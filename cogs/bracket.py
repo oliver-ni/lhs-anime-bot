@@ -52,7 +52,7 @@ class Bracket(commands.Cog):
             await ctx.send(f"Could not find bracket round with name **{name}**.")
 
     @bracket.command(name="deactivate")
-    @commands.check_any(commands.is_owner(), commands.has_permissions(administrator=True), lambda ctx: ctx.message.author.id == 193776835451027456)
+    @commands.check_any(commands.is_owner(), commands.has_permissions(administrator=True))
     async def bracket_deactivate(self, ctx: commands.Context, *, name: str):
         try:
             models.BracketRound.objects.get(name=name).update(active=False)
