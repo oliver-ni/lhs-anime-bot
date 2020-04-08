@@ -29,8 +29,7 @@ class Administration(commands.Cog):
 
         if self.db.fetch_member(ctx.author).muted:
             try:
-                role = next(filter(lambda x: x.name ==
-                                   "Muted", ctx.guild.roles))
+                role = next(filter(lambda x: x.name == "Muted", ctx.guild.roles))
                 await ctx.author.add_roles(role)
             except StopIteration:
                 pass
@@ -38,16 +37,19 @@ class Administration(commands.Cog):
             ignore = True
             delete = True
 
-        if not self.db.fetch_settings(ctx.guild).allow_profanity and not self.pf.is_clean(ctx.message.content):
+        if not self.db.fetch_settings(
+            ctx.guild
+        ).allow_profanity and not self.pf.is_clean(ctx.message.content):
             ignore = True
             delete = True
 
         return ignore, delete
 
-    async def mute_member(self, member: discord.Member, duration: datetime.timedelta = None):
+    async def mute_member(
+        self, member: discord.Member, duration: datetime.timedelta = None
+    ):
         try:
-            role = next(filter(lambda x: x.name ==
-                               "Muted", member.guild.roles))
+            role = next(filter(lambda x: x.name == "Muted", member.guild.roles))
         except StopIteration:
             raise Exception("Could not find a role named **Muted**.")
 
@@ -64,9 +66,10 @@ class Administration(commands.Cog):
 
     async def unmute_member(self, member: discord.Member):
         try:
-            if (role := next(filter(lambda x: x.name == "Muted", member.guild.roles))) in member.roles:
-                models.TempAction.objects(
-                    member=self.db.fetch_member(member)).delete()
+            if (
+                role := next(filter(lambda x: x.name == "Muted", member.guild.roles))
+            ) in member.roles:
+                models.TempAction.objects(member=self.db.fetch_member(member)).delete()
                 self.db.update_member(member, muted=False)
                 await member.remove_roles(role)
             else:
@@ -76,17 +79,24 @@ class Administration(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    @commands.check_any(commands.is_owner(), commands.has_permissions(administrator=True))
+    @commands.check_any(
+        commands.is_owner(), commands.has_permissions(administrator=True)
+    )
     async def settings(self, ctx: commands.Context):
         settings = self.db.fetch_settings(ctx.guild).to_mongo()
-        message = [f"{key} = {value}"
-                   for key, value in settings.items() if key != "_id"]
+        message = [
+            f"{key} = {value}" for key, value in settings.items() if key != "_id"
+        ]
         await ctx.send("**Guild Settings:**\n\n" + "\n".join(message))
 
     @commands.command()
     @commands.guild_only()
-    @commands.check_any(commands.is_owner(), commands.has_permissions(administrator=True))
-    async def mute(self, ctx: commands.Context, member: discord.Member, *, duration: str = None):
+    @commands.check_any(
+        commands.is_owner(), commands.has_permissions(administrator=True)
+    )
+    async def mute(
+        self, ctx: commands.Context, member: discord.Member, *, duration: str = None
+    ):
         """Mute a member."""
         if duration is None:
             await self.mute_member(member)
@@ -103,12 +113,18 @@ class Administration(commands.Cog):
                 total += datetime.timedelta(minutes=int(r.group(1)))
 
             await self.mute_member(member, total)
-            await ctx.send(f"**{member}** has been muted for **{humanfriendly.format_timespan(total)}.**")
-            await member.send(f"You have been muted for **{humanfriendly.format_timespan(total)}.**")
+            await ctx.send(
+                f"**{member}** has been muted for **{humanfriendly.format_timespan(total)}.**"
+            )
+            await member.send(
+                f"You have been muted for **{humanfriendly.format_timespan(total)}.**"
+            )
 
     @commands.command()
     @commands.guild_only()
-    @commands.check_any(commands.is_owner(), commands.has_permissions(administrator=True))
+    @commands.check_any(
+        commands.is_owner(), commands.has_permissions(administrator=True)
+    )
     async def unmute(self, ctx: commands.Context, member: discord.Member):
         """Unmute a member."""
         await self.unmute_member(member)
@@ -124,8 +140,7 @@ class Administration(commands.Cog):
                 try:
                     guild = self.bot.get_guild(action.guild)
                     member = guild.get_member(action.member.id)
-                    role = next(
-                        filter(lambda x: x.name == "Muted", guild.roles))
+                    role = next(filter(lambda x: x.name == "Muted", guild.roles))
                 except AttributeError:
                     continue
 
@@ -141,8 +156,12 @@ class Administration(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    @commands.check_any(commands.is_owner(), commands.has_permissions(administrator=True))
-    async def kick(self, ctx: commands.Context, member: discord.Member, reason: str = None):
+    @commands.check_any(
+        commands.is_owner(), commands.has_permissions(administrator=True)
+    )
+    async def kick(
+        self, ctx: commands.Context, member: discord.Member, reason: str = None
+    ):
         """Kick a member."""
         if reason is None:
             await ctx.send(f"**{member}** has been kicked.")
@@ -154,8 +173,12 @@ class Administration(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    @commands.check_any(commands.is_owner(), commands.has_permissions(administrator=True))
-    async def ban(self, ctx: commands.Context, member: discord.Member, reason: str = None):
+    @commands.check_any(
+        commands.is_owner(), commands.has_permissions(administrator=True)
+    )
+    async def ban(
+        self, ctx: commands.Context, member: discord.Member, reason: str = None
+    ):
         """Ban a member."""
         if reason is None:
             await ctx.send(f"**{member}** has been banned.")
@@ -167,20 +190,30 @@ class Administration(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    @commands.check_any(commands.is_owner(), commands.has_permissions(administrator=True))
+    @commands.check_any(
+        commands.is_owner(), commands.has_permissions(administrator=True)
+    )
     async def unban(self, ctx: commands.Context, id: int):
         """Unban a member."""
         try:
-            await ctx.guild.unban(user := next(filter(lambda x: x.user.id == id, await ctx.guild.bans())).user)
+            await ctx.guild.unban(
+                user := next(
+                    filter(lambda x: x.user.id == id, await ctx.guild.bans())
+                ).user
+            )
             await ctx.send(f"**{user}** has been unbanned.")
         except StopIteration:
             await ctx.send(f"That user is not banned...")
 
     @commands.command()
     @commands.guild_only()
-    @commands.check_any(commands.is_owner(), commands.has_permissions(administrator=True))
+    @commands.check_any(
+        commands.is_owner(), commands.has_permissions(administrator=True)
+    )
     async def purge(self, ctx: commands.Context, amount: int):
         deleted = await ctx.channel.purge(limit=amount)
-        msg = await ctx.send(f"{ctx.author.mention}, **{len(deleted)}** message{'' if len(deleted) == 1 else 's'} have been deleted from {ctx.channel.mention}.")
+        msg = await ctx.send(
+            f"{ctx.author.mention}, **{len(deleted)}** message{'' if len(deleted) == 1 else 's'} have been deleted from {ctx.channel.mention}."
+        )
         await asyncio.sleep(5)
         await msg.delete()

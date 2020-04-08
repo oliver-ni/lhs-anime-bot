@@ -19,12 +19,12 @@ class Fun(commands.Cog):
 
     @commands.command(aliases=["animeme"])
     async def meme(self, ctx: commands.Context):
-
         def fetch_meme():
-            data = requests.get("https://www.reddit.com/r/animemes.json", params={
-                "limit": 1,
-                "after": self.after
-            }, headers={"user-agent": "lhs-moe/rewrite"}).json()
+            data = requests.get(
+                "https://www.reddit.com/r/animemes.json",
+                params={"limit": 1, "after": self.after},
+                headers={"user-agent": "lhs-moe/rewrite"},
+            ).json()
             self.after = data["data"]["after"]
             return data["data"]["children"][0]["data"]
 
@@ -32,23 +32,25 @@ class Fun(commands.Cog):
             meme = fetch_meme()
 
             count = 0
-            while meme["is_self"] or meme["is_video"] or meme["over_18"] and (count := count + 1) <= 20:
+            while (
+                meme["is_self"]
+                or meme["is_video"]
+                or meme["over_18"]
+                and (count := count + 1) <= 20
+            ):
                 meme = fetch_meme()
 
-            embed = discord.Embed(
-                title=meme["title"],
-                color=0x8E44AD
-            )
+            embed = discord.Embed(title=meme["title"], color=0x8E44AD)
             embed.set_image(url=meme["url"])
 
         await ctx.send(embed=embed)
 
     @commands.command()
     async def trivia(self, ctx: commands.Context):
-
         def fetch_trivia():
             data = requests.get(
-                "https://opentdb.com/api.php?amount=1&category=31").json()
+                "https://opentdb.com/api.php?amount=1&category=31"
+            ).json()
             return data["results"][0]
 
         async with ctx.typing():
@@ -58,13 +60,11 @@ class Fun(commands.Cog):
             random.shuffle(answers)
 
             embed = discord.Embed(
-                title=html.unescape(trivia["question"]),
-                color=0x8E44AD
+                title=html.unescape(trivia["question"]), color=0x8E44AD
             )
 
             for idx, choice in enumerate(answers):
-                embed.add_field(
-                    name=f"**{'ABCD'[idx]}**", value=html.unescape(choice))
+                embed.add_field(name=f"**{'ABCD'[idx]}**", value=html.unescape(choice))
 
         response = await ctx.send(embed=embed)
 
@@ -76,20 +76,31 @@ class Fun(commands.Cog):
 
         async def wait_for_reactions():
             try:
-                def check(r, u):
-                    return (r.message.id == response.id and
-                            u.id == ctx.author.id and
-                            r.emoji in "🇦 🇧 🇨 🇩")
 
-                reaction, _ = await self.bot.wait_for("reaction_add", check=check, timeout=10)
+                def check(r, u):
+                    return (
+                        r.message.id == response.id
+                        and u.id == ctx.author.id
+                        and r.emoji in "🇦 🇧 🇨 🇩"
+                    )
+
+                reaction, _ = await self.bot.wait_for(
+                    "reaction_add", check=check, timeout=10
+                )
                 idx = {"🇦": 0, "🇧": 1, "🇨": 2, "🇩": 3}[reaction.emoji]
 
                 if answers[idx] == trivia["correct_answer"]:
-                    await ctx.send(f"{ctx.author.mention}, the answer **{html.unescape(answers[idx])}** is correct!")
+                    await ctx.send(
+                        f"{ctx.author.mention}, the answer **{html.unescape(answers[idx])}** is correct!"
+                    )
                 else:
-                    await ctx.send(f"{ctx.author.mention}, the answer **{html.unescape(answers[idx])}** is incorrect! The correct answer is **{html.unescape(trivia['correct_answer'])}**.")
+                    await ctx.send(
+                        f"{ctx.author.mention}, the answer **{html.unescape(answers[idx])}** is incorrect! The correct answer is **{html.unescape(trivia['correct_answer'])}**."
+                    )
 
             except asyncio.TimeoutError:
-                await ctx.send(f"{ctx.author.mention}, you ran out of time! The correct answer is **{html.unescape(trivia['correct_answer'])}**.")
+                await ctx.send(
+                    f"{ctx.author.mention}, you ran out of time! The correct answer is **{html.unescape(trivia['correct_answer'])}**."
+                )
 
         await asyncio.gather(add_reactions(), wait_for_reactions())

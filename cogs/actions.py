@@ -5,13 +5,7 @@ import random
 
 
 class Action:
-    messages = {
-        "nothing": [],
-        "item": [],
-        "self": [],
-        "member": [],
-        "bot": []
-    }
+    messages = {"nothing": [], "item": [], "self": [], "member": [], "bot": []}
 
     def __init__(self, target_type, user, target=None):
         self.target_type = target_type
@@ -19,7 +13,9 @@ class Action:
         self.target = target
 
     def compute(self):
-        return random.choice(self.messages[self.target_type]).format(user=self.user, target=self.target)
+        return random.choice(self.messages[self.target_type]).format(
+            user=self.user, target=self.target
+        )
 
     @classmethod
     async def convert(cls, ctx: commands.Context, argument: str):
@@ -50,19 +46,19 @@ class Eat(Action):
         ],
         "item": [
             "{user.mention} tries to eat **{target}**, but it falls to the ground.",
-            "{user.mention}'s teeth sink into **{target}**. It tastes satisfying."
+            "{user.mention}'s teeth sink into **{target}**. It tastes satisfying.",
         ],
         "self": [
             "{user.mention} might not be the smartest person here...",
-            "{user.mention}, you take a quick bite out of your own forearm—not surprisingly, it hurts."
+            "{user.mention}, you take a quick bite out of your own forearm—not surprisingly, it hurts.",
         ],
         "member": [
             "{user.mention} takes a big bite out of {target.mention}. Yum.",
-            "{user.mention}, you sneakily nibble on {target.mention}—they probably didn't even notice."
+            "{user.mention}, you sneakily nibble on {target.mention}—they probably didn't even notice.",
         ],
         "bot": [
             "I'm a bot. You can't eat me.",
-            "{user.mention}, your jaw clamps down on... wait... nothing, because I'm digital!"
+            "{user.mention}, your jaw clamps down on... wait... nothing, because I'm digital!",
         ],
     }
 
@@ -75,19 +71,19 @@ class Drink(Action):
         ],
         "item": [
             "{user.mention} tries to drink **{target}**, but fails.",
-            "{user.mention}'s straw sinks into **{target}**. It tastes satisfying."
+            "{user.mention}'s straw sinks into **{target}**. It tastes satisfying.",
         ],
         "self": [
             "{user.mention}, you stab your straw into—wait, you're not a drink!",
-            "{user.mention}, you try to fit yourself in a cup, but just can't do it."
+            "{user.mention}, you try to fit yourself in a cup, but just can't do it.",
         ],
         "member": [
             "{user.mention} grabs a lucky straw and empties {target.mention} in one sip.",
-            "{user.mention}, you stab your straw into {target.mention}—and run away as they run after you."
+            "{user.mention}, you stab your straw into {target.mention}—and run away as they run after you.",
         ],
         "bot": [
             "{user.mention}, you try to drink *me*, but I dodge your straw..",
-            "{user.mention} stabs a straw into... wait... nothing, because I'm digital!"
+            "{user.mention} stabs a straw into... wait... nothing, because I'm digital!",
         ],
     }
 
@@ -103,7 +99,9 @@ class Actions(commands.Cog):
         action = await Eat.convert(ctx, target)
         message = action.compute()
         if "@everyone" in message or "@here" in message:
-            await self.bot.get_cog("Administration").mute_member(ctx.author, datetime.timedelta(minutes=30))
+            await self.bot.get_cog("Administration").mute_member(
+                ctx.author, datetime.timedelta(minutes=30)
+            )
             await ctx.send("You have been muted for **30 minutes**.")
         else:
             await ctx.send(action.compute())
@@ -113,7 +111,9 @@ class Actions(commands.Cog):
         action = await Drink.convert(ctx, target)
         message = action.compute()
         if "@everyone" in message or "@here" in message:
-            await self.bot.get_cog("Administration").mute_member(ctx.author, datetime.timedelta(minutes=30))
+            await self.bot.get_cog("Administration").mute_member(
+                ctx.author, datetime.timedelta(minutes=30)
+            )
             await ctx.send("You have been muted for **30 minutes**.")
         else:
             await ctx.send(action.compute())

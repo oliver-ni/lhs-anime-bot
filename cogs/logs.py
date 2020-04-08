@@ -24,8 +24,14 @@ class Logs(commands.Cog):
         if (num := len(message.attachments)) > 0:
             content_and_image += "\n\n" + f"+ {num} attachment(s)"
 
-        data = models.LoggedAction(member=self.db.fetch_member(message.author), guild=message.guild.id, channel=message.channel.id,
-                                   action="delete", time=datetime.datetime.now(), before=content_and_image.strip())
+        data = models.LoggedAction(
+            member=self.db.fetch_member(message.author),
+            guild=message.guild.id,
+            channel=message.channel.id,
+            action="delete",
+            time=datetime.datetime.now(),
+            before=content_and_image.strip(),
+        )
         data.save()
 
     @commands.Cog.listener()
@@ -42,8 +48,15 @@ class Logs(commands.Cog):
         if (num := len(after.attachments)) > 0:
             after_content_and_image += "\n\n" + f"+ {num} attachment(s)"
 
-        data = models.LoggedAction(member=self.db.fetch_member(before.author), guild=before.guild.id, channel=before.channel.id,
-                                   action="edit", time=datetime.datetime.now(), before=before_content_and_image.strip(), after=after_content_and_image.strip())
+        data = models.LoggedAction(
+            member=self.db.fetch_member(before.author),
+            guild=before.guild.id,
+            channel=before.channel.id,
+            action="edit",
+            time=datetime.datetime.now(),
+            before=before_content_and_image.strip(),
+            after=after_content_and_image.strip(),
+        )
         data.save()
 
     @commands.command()
@@ -76,11 +89,11 @@ class Logs(commands.Cog):
             embed = discord.Embed(
                 title=f"**Auditing {value}**",
                 description="Recently deleted and edited messages",
-                color=0x8E44AD
+                color=0x8E44AD,
             )
             embed.set_footer(text=f"Page {x + 1}/{pages}")
 
-            for idx, action in enumerate(data[x*5:x*5+5], start=x*5):
+            for idx, action in enumerate(data[x * 5 : x * 5 + 5], start=x * 5):
 
                 print(action.channel, action.member)
 
@@ -95,13 +108,13 @@ class Logs(commands.Cog):
                     embed.add_field(
                         name=f"**Edited message {description}**",
                         value=f"– **Before:** {action.before}\n– **After:** {action.after}\n– at *{action.time:%m-%d-%y %I:%M %p}*",
-                        inline=False
+                        inline=False,
                     )
                 elif action.action == "delete":
                     embed.add_field(
                         name=f"**Deleted message {description}**",
                         value=f"– **Message:** {action.before}\n– at *{action.time:%m-%d-%y %I:%M %p}*",
-                        inline=False
+                        inline=False,
                     )
 
             return embed
@@ -117,13 +130,14 @@ class Logs(commands.Cog):
 
         try:
             while True:
-                reaction, user = await self.bot.wait_for("reaction_add", check=lambda r, u: r.message.id == response.id and not u.bot, timeout=120)
-                page = {
-                    "⏮": 0,
-                    "◀": page - 1,
-                    "▶": page + 1,
-                    "⏭️": pages - 1,
-                }[reaction.emoji] % pages
+                reaction, user = await self.bot.wait_for(
+                    "reaction_add",
+                    check=lambda r, u: r.message.id == response.id and not u.bot,
+                    timeout=120,
+                )
+                page = {"⏮": 0, "◀": page - 1, "▶": page + 1, "⏭️": pages - 1,}[
+                    reaction.emoji
+                ] % pages
                 await reaction.remove(user)
                 await response.edit(embed=get_page(page, pages))
         except asyncio.TimeoutError:

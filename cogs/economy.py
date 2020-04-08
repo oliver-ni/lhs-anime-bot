@@ -48,14 +48,14 @@ class Economy(commands.Cog):
             embed = discord.Embed(
                 title="**XP Leaderboard (testing)**",
                 description="Our server's most active members.",
-                color=0x8E44AD
+                color=0x8E44AD,
             )
             embed.set_footer(text=f"Page {x + 1}/{pages}")
-            for idx, member in enumerate(top[x*5:x*5+5], start=x*5):
+            for idx, member in enumerate(top[x * 5 : x * 5 + 5], start=x * 5):
                 embed.add_field(
                     name=f"**{idx + 1}. {ctx.guild.get_member(member.id)}**",
                     value=str(member.xp),
-                    inline=False
+                    inline=False,
                 )
             return embed
 
@@ -70,13 +70,14 @@ class Economy(commands.Cog):
 
         try:
             while True:
-                reaction, user = await self.bot.wait_for("reaction_add", check=lambda r, u: r.message.id == response.id and not u.bot, timeout=120)
-                page = {
-                    "⏮": 0,
-                    "◀": page - 1,
-                    "▶": page + 1,
-                    "⏭️": pages - 1,
-                }[reaction.emoji] % pages
+                reaction, user = await self.bot.wait_for(
+                    "reaction_add",
+                    check=lambda r, u: r.message.id == response.id and not u.bot,
+                    timeout=120,
+                )
+                page = {"⏮": 0, "◀": page - 1, "▶": page + 1, "⏭️": pages - 1,}[
+                    reaction.emoji
+                ] % pages
                 await reaction.remove(user)
                 await response.edit(embed=get_page(page, pages))
         except asyncio.TimeoutError:

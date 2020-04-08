@@ -12,10 +12,10 @@ mongoengine.connect("lhs_moe")
 
 # Instantiate Discord Bot
 
-print(os.getenv("COMMAND_PREFIX"))
-
-bot = commands.Bot(command_prefix=os.getenv("COMMAND_PREFIX"),
-                   help_command=commands.MinimalHelpCommand())
+bot = commands.Bot(
+    command_prefix=os.getenv("COMMAND_PREFIX"),
+    help_command=commands.MinimalHelpCommand(),
+)
 
 bot.add_cog(Actions(bot))
 bot.add_cog(Administration(bot))
@@ -47,6 +47,7 @@ async def on_message(message):
 
     if not ignore:
         await bot.process_commands(message)
+
 
 # Run Discord Bot
 
