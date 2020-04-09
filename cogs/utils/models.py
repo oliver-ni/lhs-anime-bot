@@ -1,4 +1,6 @@
-from mongoengine import *
+from mongoengine.document import Document, EmbeddedDocument
+from mongoengine.fields import *
+from mongoengine.queryset import CASCADE
 
 
 class Member(Document):
@@ -40,3 +42,11 @@ class BracketRound(Document):
     name = StringField(required=True, unique=True)
     matches = EmbeddedDocumentListField(BracketMatch)
     active = BooleanField(default=False, required=True)
+
+
+class RoleReact(Document):
+    guild = LongField(required=True)
+    channel = LongField(required=True)
+    message = LongField(required=True, unique=True)
+    name = StringField(required=True, unique=True)
+    options = MapField(field=LongField())

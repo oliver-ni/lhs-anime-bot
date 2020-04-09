@@ -3,7 +3,7 @@ import discord
 import asyncio
 import math
 
-from . import models
+from .utils import models
 
 
 class Economy(commands.Cog):

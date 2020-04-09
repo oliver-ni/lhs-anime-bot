@@ -4,7 +4,7 @@ import datetime
 import asyncio
 import math
 
-from . import models
+from .utils import models
 
 
 class Logs(commands.Cog):

@@ -3,7 +3,7 @@ import discord
 import mongoengine
 import datetime
 
-from . import models
+from .utils import models
 
 
 class Database(commands.Cog):

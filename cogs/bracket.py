@@ -5,7 +5,7 @@ import requests
 import asyncio
 import discord
 
-from . import models
+from .utils import models, checks
 
 
 class Bracket(commands.Cog):
@@ -24,9 +24,7 @@ class Bracket(commands.Cog):
         pass
 
     @bracket.command(name="create")
-    @commands.check_any(
-        commands.is_owner(), commands.has_permissions(administrator=True)
-    )
+    @checks.is_admin()
     async def bracket_create(self, ctx: commands.Context, json_url: str, *, name: str):
         r = requests.get(json_url)
         json_data = r.json()
@@ -45,9 +43,7 @@ class Bracket(commands.Cog):
             await ctx.send(f"There is already a bracket round with that name.")
 
     @bracket.command(name="activate")
-    @commands.check_any(
-        commands.is_owner(), commands.has_permissions(administrator=True)
-    )
+    @checks.is_admin()
     async def bracket_activate(self, ctx: commands.Context, *, name: str):
         try:
             models.BracketRound.objects.get(name=name).update(active=True)
@@ -56,9 +52,7 @@ class Bracket(commands.Cog):
             await ctx.send(f"Could not find bracket round with name **{name}**.")
 
     @bracket.command(name="deactivate")
-    @commands.check_any(
-        commands.is_owner(), commands.has_permissions(administrator=True)
-    )
+    @checks.is_admin()
     async def bracket_deactivate(self, ctx: commands.Context, *, name: str):
         try:
             models.BracketRound.objects.get(name=name).update(active=False)
@@ -67,9 +61,7 @@ class Bracket(commands.Cog):
             await ctx.send(f"Could not find bracket round with name **{name}**.")
 
     @bracket.command(name="delete")
-    @commands.check_any(
-        commands.is_owner(), commands.has_permissions(administrator=True)
-    )
+    @checks.is_admin()
     async def bracket_delete(self, ctx: commands.Context, *, name: str):
         try:
             models.BracketRound.objects.get(name=name).delete()
@@ -106,9 +98,7 @@ class Bracket(commands.Cog):
             await ctx.send(f"Could not find bracket round with name **{name}**.")
 
     @bracket.command(name="scores")
-    @commands.check_any(
-        commands.is_owner(), commands.has_permissions(administrator=True)
-    )
+    @checks.is_admin()
     async def bracket_scores(self, ctx: commands.Context, *, name: str):
         try:
             matches = models.BracketRound.objects.get(name=name).matches
@@ -134,9 +124,7 @@ class Bracket(commands.Cog):
             await ctx.send(f"Could not find bracket round with name **{name}**.")
 
     @bracket.command(name="votes")
-    @commands.check_any(
-        commands.is_owner(), commands.has_permissions(administrator=True)
-    )
+    @checks.is_admin()
     async def bracket_votes(self, ctx: commands.Context, *, name: str):
         try:
             matches = models.BracketRound.objects.get(name=name).matches

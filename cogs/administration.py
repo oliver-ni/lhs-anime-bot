@@ -7,7 +7,11 @@ import asyncio
 import math
 import re
 
-from . import models, database
+from .utils import models, checks
+
+
+class AlreadyDoneError(Exception):
+    pass
 
 
 class Administration(commands.Cog):
@@ -20,7 +24,7 @@ class Administration(commands.Cog):
         self.pf = ProfanityFilter()
 
     @property
-    def db(self) -> database.Database:
+    def db(self):
         return self.bot.get_cog("Database")
 
     async def check_message(self, ctx: commands.Context):
@@ -48,13 +52,10 @@ class Administration(commands.Cog):
     async def mute_member(
         self, member: discord.Member, duration: datetime.timedelta = None
     ):
-        try:
-            role = next(filter(lambda x: x.name == "Muted", member.guild.roles))
-        except StopIteration:
-            raise Exception("Could not find a role named **Muted**.")
+        role = next(filter(lambda x: x.name == "Muted", member.guild.roles))
 
         if role in member.roles:
-            raise Exception(f"**{member}** is already muted.")
+            raise AlreadyDoneError()
 
         if duration is None:
             self.db.update_member(member, muted=True)
@@ -65,23 +66,18 @@ class Administration(commands.Cog):
             await member.add_roles(role)
 
     async def unmute_member(self, member: discord.Member):
-        try:
-            if (
-                role := next(filter(lambda x: x.name == "Muted", member.guild.roles))
-            ) in member.roles:
-                models.TempAction.objects(member=self.db.fetch_member(member)).delete()
-                self.db.update_member(member, muted=False)
-                await member.remove_roles(role)
-            else:
-                raise Exception(f"**{member}** is not currently muted...")
-        except StopIteration:
-            raise Exception("Could not find a role named **Muted**.")
+        if (
+            role := next(filter(lambda x: x.name == "Muted", member.guild.roles))
+        ) in member.roles:
+            models.TempAction.objects(member=self.db.fetch_member(member)).delete()
+            self.db.update_member(member, muted=False)
+            await member.remove_roles(role)
+        else:
+            raise AlreadyDoneError()
 
     @commands.command()
     @commands.guild_only()
-    @commands.check_any(
-        commands.is_owner(), commands.has_permissions(administrator=True)
-    )
+    @checks.is_admin()
     async def settings(self, ctx: commands.Context):
         settings = self.db.fetch_settings(ctx.guild).to_mongo()
         message = [
@@ -91,15 +87,19 @@ class Administration(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    @commands.check_any(
-        commands.is_owner(), commands.has_permissions(administrator=True)
-    )
+    @checks.is_admin()
     async def mute(
         self, ctx: commands.Context, member: discord.Member, *, duration: str = None
     ):
         """Mute a member."""
         if duration is None:
-            await self.mute_member(member)
+            try:
+                await self.mute_member(member, total)
+            except StopIteration:
+                await ctx.send("**Error:** Could not find role named **Muted**.")
+            except AlreadyDoneError:
+                await ctx.send("**{member}** is already muted.")
+
             await ctx.send(f"**{member}** has been muted.")
             await member.send("You have been muted.")
         else:
@@ -112,7 +112,13 @@ class Administration(commands.Cog):
             if (r := re.search(r"(\d+)\s*m", duration)) is not None:
                 total += datetime.timedelta(minutes=int(r.group(1)))
 
-            await self.mute_member(member, total)
+            try:
+                await self.mute_member(member, total)
+            except StopIteration:
+                await ctx.send("**Error:** Could not find role named **Muted**.")
+            except AlreadyDoneError:
+                await ctx.send("**Error:** **{member}** is already muted.")
+
             await ctx.send(
                 f"**{member}** has been muted for **{humanfriendly.format_timespan(total)}.**"
             )
@@ -122,12 +128,16 @@ class Administration(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    @commands.check_any(
-        commands.is_owner(), commands.has_permissions(administrator=True)
-    )
+    @checks.is_admin()
     async def unmute(self, ctx: commands.Context, member: discord.Member):
         """Unmute a member."""
-        await self.unmute_member(member)
+        try:
+            await self.unmute_member(member)
+        except StopIteration:
+            await ctx.send("**Error:** Could not find role named **Muted**.")
+        except AlreadyDoneError:
+            await ctx.send("**{member}** is not currently muted.")
+        
         await ctx.send(f"**{member}** has been unmuted.")
         await member.send("You have been unmuted.")
 
@@ -156,9 +166,7 @@ class Administration(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    @commands.check_any(
-        commands.is_owner(), commands.has_permissions(administrator=True)
-    )
+    @checks.is_admin()
     async def kick(
         self, ctx: commands.Context, member: discord.Member, reason: str = None
     ):
@@ -173,9 +181,7 @@ class Administration(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    @commands.check_any(
-        commands.is_owner(), commands.has_permissions(administrator=True)
-    )
+    @checks.is_admin()
     async def ban(
         self, ctx: commands.Context, member: discord.Member, reason: str = None
     ):
@@ -190,9 +196,7 @@ class Administration(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    @commands.check_any(
-        commands.is_owner(), commands.has_permissions(administrator=True)
-    )
+    @checks.is_admin()
     async def unban(self, ctx: commands.Context, id: int):
         """Unban a member."""
         try:
@@ -207,13 +211,12 @@ class Administration(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    @commands.check_any(
-        commands.is_owner(), commands.has_permissions(administrator=True)
-    )
+    @checks.is_admin()
     async def purge(self, ctx: commands.Context, amount: int):
+        await ctx.message.delete()
         deleted = await ctx.channel.purge(limit=amount)
         msg = await ctx.send(
             f"{ctx.author.mention}, **{len(deleted)}** message{'' if len(deleted) == 1 else 's'} have been deleted from {ctx.channel.mention}."
         )
-        await asyncio.sleep(5)
+        await asyncio.sleep(1)
         await msg.delete()
