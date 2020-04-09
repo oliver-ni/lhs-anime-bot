@@ -144,7 +144,7 @@ class Roles(commands.Cog):
         obj.save()
 
         await ctx.send(
-            f"Added {emoji} linking to role **{role}** to reaction role manager in {message.channel.mention} ({message.jump_url})"
+            f"Added {emoji} linking to role **{role}** to reaction role manager in {message.channel.mention}"
         )
 
     @rolereact.command(name="remove")
@@ -182,7 +182,7 @@ class Roles(commands.Cog):
         obj.save()
 
         await ctx.send(
-            f"Removed {emoji} linking to role **{ctx.guild.get_role(role)}** to reaction role manager in {message.channel.mention} ({message.jump_url})"
+            f"Removed {emoji} linking to role **{ctx.guild.get_role(role)}** to reaction role manager in {message.channel.mention}"
         )
 
     @commands.Cog.listener()

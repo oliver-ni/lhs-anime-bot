@@ -63,7 +63,9 @@ class Logs(commands.Cog):
     @commands.guild_only()
     async def audit(self, ctx: commands.Context, *, argument: str = None):
 
-        query_dict = {}
+        query_dict = {
+            "guild": ctx.guild.id
+        }
 
         value = "server"
         field = None
@@ -107,13 +109,13 @@ class Logs(commands.Cog):
                 if action.action == "edit":
                     embed.add_field(
                         name=f"**Edited message {description}**",
-                        value=f"– **Before:** {action.before}\n– **After:** {action.after}\n– at *{action.time:%m-%d-%y %I:%M %p}*",
+                        value=f"– **Before:** {action.before}\n– **After:** {action.after}\n– at *{action.time:%m-%d-%y %I:%M %p}*"[:1024],
                         inline=False,
                     )
                 elif action.action == "delete":
                     embed.add_field(
                         name=f"**Deleted message {description}**",
-                        value=f"– **Message:** {action.before}\n– at *{action.time:%m-%d-%y %I:%M %p}*",
+                        value=f"– **Message:** {action.before}\n– at *{action.time:%m-%d-%y %I:%M %p}*"[:1024],
                         inline=False,
                     )
 
