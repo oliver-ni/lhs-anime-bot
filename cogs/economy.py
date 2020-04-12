@@ -26,7 +26,7 @@ class Economy(commands.Cog):
         self.db.update_member(member, inc__balance=amount)
 
     def remove_balance(self, member: discord.Member, amount: int):
-        self.db.update_member(member, inc__balance=-amount)
+        self.db.update_member(member, dec__balance=amount)
 
     @commands.command(aliases=["exp", "experience", "points"])
     async def xp(self, ctx: commands.Context, *, user: discord.Member = None):
