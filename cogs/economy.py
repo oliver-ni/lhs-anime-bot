@@ -99,7 +99,7 @@ class Economy(commands.Cog):
             await ctx.send("Nice try...")
             return
 
-        if amount > self.balance(member):
+        if amount > self.balance(ctx.author):
             await ctx.send("You do not have enough money!")
             return
 
