@@ -94,7 +94,7 @@ class Administration(commands.Cog):
         """Mute a member."""
         if duration is None:
             try:
-                await self.mute_member(member, total)
+                await self.mute_member(member)
             except StopIteration:
                 await ctx.send("**Error:** Could not find role named **Muted**.")
             except AlreadyDoneError:
