@@ -95,7 +95,7 @@ class Economy(commands.Cog):
 
     @commands.command()
     async def pay(self, ctx: commands.Context, member: discord.Member, amount: int):
-        if member == ctx.author or amount == 0:
+        if member == ctx.author or amount <= 0:
             await ctx.send("Nice try...")
             return
 

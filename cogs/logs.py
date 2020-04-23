@@ -23,6 +23,7 @@ class Logs(commands.Cog):
 
         if (num := len(message.attachments)) > 0:
             content_and_image += "\n\n" + f"+ {num} attachment(s)"
+            print(message.attachments[0].proxy_url)
 
         data = models.LoggedAction(
             member=self.db.fetch_member(message.author),
