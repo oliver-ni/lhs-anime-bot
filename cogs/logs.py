@@ -19,6 +19,8 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
+        if message.author.bot:
+            return
         content_and_image = message.content
 
         if (num := len(message.attachments)) > 0:
@@ -37,6 +39,8 @@ class Logs(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
+        if message.author.bot:
+            return
         if before.content == after.content:
             return
 
