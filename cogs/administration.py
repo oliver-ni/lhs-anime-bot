@@ -46,6 +46,10 @@ class Administration(commands.Cog):
         ).allow_profanity and not self.pf.is_clean(ctx.message.content):
             ignore = True
             delete = True
+        
+        if "🥬" in ctx.message.content:
+            ignore = True
+            delete = True
 
         return ignore, delete
 
