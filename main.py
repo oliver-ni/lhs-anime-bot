@@ -19,6 +19,7 @@ bot = commands.Bot(
 
 bot.add_cog(Actions(bot))
 bot.add_cog(Administration(bot))
+bot.add_cog(Bell(bot))
 bot.add_cog(Bot(bot))
 bot.add_cog(Bracket(bot))
 bot.add_cog(Database(bot))

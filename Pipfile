@@ -14,6 +14,7 @@ mongoengine = "*"
 requests = "*"
 humanfriendly = "*"
 profanity-filter = "*"
+pytz = "*"
 
 [requires]
 python_version = "3.8"
