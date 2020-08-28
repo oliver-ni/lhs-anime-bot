@@ -79,10 +79,14 @@ class Bell(commands.Cog):
             await discord.utils.sleep_until(start - timedelta(minutes=5))
             channel = bot.get_channel(CHANNEL_ID)
             # lol hardcoding go brr
-            await channel.send(
-                f"<@&745720820474576896> **{period.name}** starts in 5 minutes at **{period.start:%-I:%M}** and ends at **{period.end:%-I:%M}**."
-            )
-
+            if (period.notify):
+                await channel.send(
+                    f"<@&745720820474576896> **{period.name}** starts in 5 minutes at **{period.start:%-I:%M}** and ends at **{period.end:%-I:%M}**."
+                )
+            else:
+                await channel.send(
+                    f"**{period.name}** starts in 5 minutes at **{period.start:%-I:%M}** and ends at **{period.end:%-I:%M}**."
+                )
         return task(self.bot)
 
     @tasks.loop(hours=24)
