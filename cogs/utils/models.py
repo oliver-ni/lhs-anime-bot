@@ -6,6 +6,7 @@ from mongoengine.queryset import CASCADE
 class Member(Document):
     id = LongField(primary_key=True, required=True)
     guest = BooleanField(default=False)
+    email = StringField(required=False)
     name = StringField(required=False)
     classof = IntField(required=False)
 

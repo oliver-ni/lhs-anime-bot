@@ -13,6 +13,8 @@ GRADE_ROLES = {
     2021: 752033673829810207,
 }
 
+ALL_ROLES = [GUEST_ROLE, VERIFIED_ROLE, *GRADE_ROLES.values()]
+
 
 async def add_reactions(message, *emojis):
     for emoji in emojis:
@@ -24,6 +26,7 @@ class Welcome(commands.Cog):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.tasks = {}
 
     @property
     def db(self):
@@ -33,9 +36,14 @@ class Welcome(commands.Cog):
     async def verify(self, ctx: commands.Context):
         guild = self.bot.get_guild(576586719999033374)
         member = guild.get_member(ctx.author.id)
+        if ctx.author.id in self.tasks:
+            self.tasks[ctx.author.id].cancel()
         if member is not None:
             await ctx.send("OK, restarting the verification process.")
-            await self.verify_member(member)
+            self.tasks[ctx.author.id] = self.bot.loop.create_task(
+                self.verify_member(member)
+            )
+            # await self.verify_member(member)
         else:
             await ctx.send(
                 "Looks like you left the server, so I can't verify you yet. Please join again! discord.gg/MZNBmwe"
@@ -50,11 +58,14 @@ class Welcome(commands.Cog):
         if data is not None:
             return
 
-        await self.verify_member(member)
+        if member.id != 138498458075136000:
+            return
+
+        self.tasks[member.id] = self.bot.loop.create_task(self.verify_member(member))
 
     async def verify_member(self, member):
         if member.guild.id != 576586719999033374:
-            return
+            self.tasks.pop(member.id)
 
         await member.send(
             "Welcome to the **LHS Anime Club** Discord server! "
@@ -87,6 +98,8 @@ class Welcome(commands.Cog):
                 await member.send(
                     "Great! I've given you the **Guest** role and you can now talk in the server. Have fun!"
                 )
+                self.db.update_member(member, guest=True)
+                self.tasks.pop(member.id)
                 return
 
             # Name
@@ -121,10 +134,42 @@ class Welcome(commands.Cog):
                         f"Oops! Let's try that again. Please answer in the format `Firstname Lastname`."
                     )
 
-            # Grade
+            # Email
 
             message = await member.send(
                 f"Nice to meet you, {name.split()[0]}! "
+                "What's your email address (personal or school)?"
+            )
+            while True:
+                m = await self.bot.wait_for(
+                    "message",
+                    check=lambda m: m.author == member
+                    and m.channel == message.channel
+                    and "@" in m.content,
+                    timeout=60,
+                )
+                email = m.content
+                message = await member.send(
+                    f"Your email address is **{email}**. Is that correct?"
+                )
+                self.bot.loop.create_task(add_reactions(message, "✅", "❌"))
+                r, u = await self.bot.wait_for(
+                    "reaction_add",
+                    check=lambda r, u: u == member
+                    and r.message.id == message.id
+                    and r.emoji in ("✅", "❌"),
+                    timeout=60,
+                )
+                if r.emoji == "✅":
+                    break
+                else:
+                    message = await member.send(
+                        f"Oops! Let's try that again. What's your email address?"
+                    )
+
+            # Grade
+
+            message = await member.send(
                 "Last question before I let you in: what grade are you in? "
                 "Type `9`, `10`, `11`, or `12` to let me know."
             )
@@ -138,7 +183,7 @@ class Welcome(commands.Cog):
             )
 
             grade = int(m.content)
-            classof = grade + 2011
+            classof = 2033 - grade
 
             await member.add_roles(member.guild.get_role(VERIFIED_ROLE))
             await member.add_roles(member.guild.get_role(GRADE_ROLES[classof]))
@@ -147,7 +192,10 @@ class Welcome(commands.Cog):
                 "If you have any questions, please let one of the officers know. Have fun!"
             )
 
-            self.db.create_member(member, name=name, classof=classof)
+            self.db.update_member(
+                member, name=name, email=email, classof=classof, guest=False
+            )
+            self.tasks.pop(member.id)
 
         except asyncio.TimeoutError:
             await member.send(
