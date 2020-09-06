@@ -1,6 +1,9 @@
-from discord.ext import commands
-import discord
 import asyncio
+
+import discord
+from discord.ext import commands
+
+from .utils import checks
 
 GUILD_ID = 576586719999033374
 GUEST_ROLE = 643303716568432659
@@ -31,6 +34,25 @@ class Welcome(commands.Cog):
     @property
     def db(self):
         return self.bot.get_cog("Database")
+
+    @commands.command()
+    @checks.is_admin()
+    async def whois(self, ctx: commands.Context, member: discord.Member):
+        data = self.db.fetch_member(member)
+        if data is None:
+            return await ctx.send("That user is not verified!")
+
+        embed = discord.Embed(title="Member Info", color=0x8E44AD)
+        embed.set_author(name=str(ctx.author), icon_url=ctx.author.avatar_url)
+
+        if not data.guest:
+            embed.add_field(name="Class Of", value=data.classof)
+            embed.add_field(name="Name", value=data.name or "No Name", inline=False)
+            embed.add_field(name="Email", value=data.email or "No Email", inline=False)
+        else:
+            embed.description = "This user is a guest."
+
+        await ctx.send(embed=embed)
 
     @commands.command()
     async def verify(self, ctx: commands.Context):
