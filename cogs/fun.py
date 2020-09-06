@@ -21,7 +21,7 @@ class Fun(commands.Cog):
     async def meme(self, ctx: commands.Context):
         def fetch_meme():
             data = requests.get(
-                "https://www.reddit.com/r/animemes.json",
+                "https://www.reddit.com/r/goodanimemes.json",
                 params={"limit": 1, "after": self.after},
                 headers={"user-agent": "lhs-moe/rewrite"},
             ).json()
@@ -62,6 +62,7 @@ class Fun(commands.Cog):
             embed = discord.Embed(
                 title=html.unescape(trivia["question"]), color=0x8E44AD
             )
+            embed.set_author(name=str(ctx.author), icon_url=ctx.author.avatar_url)
 
             for idx, choice in enumerate(answers):
                 embed.add_field(name=f"**{'ABCD'[idx]}**", value=html.unescape(choice))
