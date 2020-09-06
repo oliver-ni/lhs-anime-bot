@@ -41,6 +41,7 @@ class Roles(commands.Cog):
             await ctx.send("**Error:** Could not find role named **{role}**.")
 
     @commands.group(invoke_without_command=True, aliases=["rr"])
+    @checks.is_admin()
     async def rolereact(self, ctx: commands.Context):
         await ctx.send_help(self.rolereact)
 
