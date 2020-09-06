@@ -51,9 +51,6 @@ class Welcome(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        if member.guild.id != 576586719999033374:
-            return
-
         data = self.db.fetch_member(member)
         if data is not None:
             return
