@@ -43,7 +43,7 @@ class Welcome(commands.Cog):
             return await ctx.send("That user is not verified!")
 
         embed = discord.Embed(title="Member Info", color=0x8E44AD)
-        embed.set_author(name=str(ctx.author), icon_url=ctx.author.avatar_url)
+        embed.set_author(name=str(member), icon_url=member.avatar_url)
 
         if not data.guest:
             embed.add_field(name="Class Of", value=data.classof)
