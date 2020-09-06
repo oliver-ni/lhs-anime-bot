@@ -135,17 +135,21 @@ class Welcome(commands.Cog):
 
             message = await member.send(
                 f"Nice to meet you, {name.split()[0]}! "
-                "What's your email address (personal or school)?"
+                "What's your email address (personal or school)? If you don't wish to tell us this, please say `none`."
             )
             while True:
                 m = await self.bot.wait_for(
                     "message",
                     check=lambda m: m.author == member
                     and m.channel == message.channel
-                    and "@" in m.content,
+                    and "@" in m.content
+                    or m.content.lower() == "none",
                     timeout=60,
                 )
                 email = m.content
+                if email.lower() == "none":
+                    email = None
+                    break
                 message = await member.send(
                     f"Your email address is **{email}**. Is that correct?"
                 )
