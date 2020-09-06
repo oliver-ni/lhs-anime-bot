@@ -104,3 +104,7 @@ class Fun(commands.Cog):
                 )
 
         await asyncio.gather(add_reactions(), wait_for_reactions())
+
+
+def setup(bot):
+    bot.add_cog(Fun(bot))

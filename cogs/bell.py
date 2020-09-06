@@ -53,14 +53,6 @@ SCHEDULE = [
     [],
 ]
 
-TEST = [
-    Period("Test Class 1", time(0, 46), time(0, 47)),
-    Period("Test Class 2", time(0, 47), time(0, 48)),
-    Period("Test Class 3", time(0, 48), time(0, 49)),
-]
-
-SCHEDULE = [TEST, TEST, TEST, TEST, TEST]
-
 
 class Bell(commands.Cog):
     """Bell schedule reminders."""
@@ -76,10 +68,11 @@ class Bell(commands.Cog):
     def get_task(self, period: Period):
         async def task(bot: commands.Bot):
             start = tz.localize(datetime.combine(datetime.now(), period.start))
+            if datetime.combine(datetime.now(), period.start) < datetime.now():
+                return
             await discord.utils.sleep_until(start - timedelta(minutes=5))
             channel = bot.get_channel(CHANNEL_ID)
-            # lol hardcoding go brr
-            if (period.notify):
+            if period.notify:
                 await channel.send(
                     f"<@&745720820474576896> **{period.name}** starts in 5 minutes at **{period.start:%-I:%M}** and ends at **{period.end:%-I:%M}**."
                 )
@@ -87,6 +80,7 @@ class Bell(commands.Cog):
                 await channel.send(
                     f"**{period.name}** starts in 5 minutes at **{period.start:%-I:%M}** and ends at **{period.end:%-I:%M}**."
                 )
+
         return task(self.bot)
 
     @tasks.loop(hours=24)
@@ -94,3 +88,7 @@ class Bell(commands.Cog):
         await self.bot.wait_until_ready()
         for period in SCHEDULE[datetime.today().weekday()]:
             asyncio.create_task(self.get_task(period))
+
+
+def setup(bot):
+    bot.add_cog(Bell(bot))

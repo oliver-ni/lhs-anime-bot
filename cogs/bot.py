@@ -21,13 +21,12 @@ class Bot(commands.Cog):
         if message.author.bot:
             return
 
-        self.db.update_member(message.author, inc__xp=1)
-
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send_help(ctx.command)
-        elif not isinstance(error, commands.CommandNotFound):
-            await ctx.send(f"**Error:** {error}")
-
         raise error
+
+
+def setup(bot):
+    bot.add_cog(Bot(bot))

@@ -8,13 +8,12 @@ black = "*"
 
 [packages]
 discord-py = "*"
-pycodestyle = {git = "https://github.com/PyCQA/pycodestyle.git",ref = "master"}
 python-dotenv = "*"
 mongoengine = "*"
 requests = "*"
 humanfriendly = "*"
-profanity-filter = "*"
 pytz = "*"
+jishaku = "*"
 
 [requires]
 python_version = "3.8"

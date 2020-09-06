@@ -5,31 +5,19 @@ from mongoengine.queryset import CASCADE
 
 class Member(Document):
     id = LongField(primary_key=True, required=True)
-    xp = IntField(min_value=0, default=0)
-    balance = IntField(min_value=0, default=0)
-    muted = BooleanField(default=False)
-
-
-class TempAction(Document):
-    guild = LongField(required=True)
-    member = ReferenceField(Member, reverse_delete_rule=CASCADE, required=True)
-    action = StringField(choices=("mute", "ban"), required=True)
-    expires = DateTimeField(required=True)
+    guest = BooleanField(default=False)
+    name = StringField(required=False)
+    classof = IntField(required=False)
 
 
 class LoggedAction(Document):
     guild = LongField(required=True)
     channel = LongField(required=True)
-    member = ReferenceField(Member, reverse_delete_rule=CASCADE, required=True)
+    member = LongField(required=True)
     time = DateTimeField(required=True)
     action = StringField(choices=("edit", "delete"), required=True)
     before = StringField(required=True)
     after = StringField()
-
-
-class GuildSettings(Document):
-    id = LongField(primary_key=True, required=True)
-    allow_profanity = BooleanField(default=True, required=True)
 
 
 class BracketMatch(EmbeddedDocument):

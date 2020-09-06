@@ -215,3 +215,7 @@ class Bracket(commands.Cog):
 
         bracket.save()
         await ctx.author.send(f"Your votes have been saved.")
+
+
+def setup(bot):
+    bot.add_cog(Bracket(bot))

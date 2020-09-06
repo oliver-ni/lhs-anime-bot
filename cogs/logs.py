@@ -28,7 +28,7 @@ class Logs(commands.Cog):
             print(message.attachments[0].proxy_url)
 
         data = models.LoggedAction(
-            member=self.db.fetch_member(message.author),
+            member=message.author.id,
             guild=message.guild.id,
             channel=message.channel.id,
             action="delete",
@@ -54,7 +54,7 @@ class Logs(commands.Cog):
             after_content_and_image += "\n\n" + f"+ {num} attachment(s)"
 
         data = models.LoggedAction(
-            member=self.db.fetch_member(before.author),
+            member=before.author.id,
             guild=before.guild.id,
             channel=before.channel.id,
             action="edit",
@@ -66,11 +66,10 @@ class Logs(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
+    @commands.is_owner()
     async def audit(self, ctx: commands.Context, *, argument: str = None):
 
-        query_dict = {
-            "guild": ctx.guild.id
-        }
+        query_dict = {"guild": ctx.guild.id}
 
         value = "server"
         field = None
@@ -102,25 +101,27 @@ class Logs(commands.Cog):
 
             for idx, action in enumerate(data[x * 5 : x * 5 + 5], start=x * 5):
 
-                print(action.channel, action.member)
-
                 if field == "member":
                     description = f"in #{ctx.guild.get_channel(action.channel)}"
                 elif field == "channel":
-                    description = f"by {ctx.guild.get_member(action.member.id)}"
+                    description = f"by {ctx.guild.get_member(action.member)}"
                 else:
-                    description = f"in #{ctx.guild.get_channel(action.channel)} by {ctx.guild.get_member(action.member.id)}"
+                    description = f"in #{ctx.guild.get_channel(action.channel)} by {ctx.guild.get_member(action.member)}"
 
                 if action.action == "edit":
                     embed.add_field(
                         name=f"**Edited message {description}**",
-                        value=f"– **Before:** {action.before}\n– **After:** {action.after}\n– at *{action.time:%m-%d-%y %I:%M %p}*"[:1024],
+                        value=f"– **Before:** {action.before}\n– **After:** {action.after}\n– at *{action.time:%m-%d-%y %I:%M %p}*"[
+                            :1024
+                        ],
                         inline=False,
                     )
                 elif action.action == "delete":
                     embed.add_field(
                         name=f"**Deleted message {description}**",
-                        value=f"– **Message:** {action.before}\n– at *{action.time:%m-%d-%y %I:%M %p}*"[:1024],
+                        value=f"– **Message:** {action.before}\n– at *{action.time:%m-%d-%y %I:%M %p}*"[
+                            :1024
+                        ],
                         inline=False,
                     )
 
@@ -149,3 +150,7 @@ class Logs(commands.Cog):
                 await response.edit(embed=get_page(page, pages))
         except asyncio.TimeoutError:
             await response.add_reaction("🛑")
+
+
+def setup(bot):
+    bot.add_cog(Logs(bot))

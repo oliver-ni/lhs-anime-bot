@@ -117,3 +117,7 @@ class Actions(commands.Cog):
             await ctx.send("You have been muted for **30 minutes**.")
         else:
             await ctx.send(action.compute())
+
+
+def setup(bot):
+    bot.add_cog(Actions(bot))

@@ -70,8 +70,7 @@ class Roles(commands.Cog):
     async def rolereact_list(self, ctx: commands.Context):
         rr = models.RoleReact.objects(guild=ctx.guild.id)
         await ctx.send(
-            f"Reaction Role Managers:\n\n"
-            + "\n".join(f"**{r.name}**" for r in rr)
+            f"Reaction Role Managers:\n\n" + "\n".join(f"**{r.name}**" for r in rr)
         )
 
     @rolereact.command(name="delete")
@@ -79,9 +78,7 @@ class Roles(commands.Cog):
     async def rolereact_delete(self, ctx: commands.Context, name: str):
         try:
             obj = models.RoleReact.objects.get(name=name, guild=ctx.guild.id).delete()
-            await ctx.send(
-                f"Deleted reaction role manager **{name}**."
-            )
+            await ctx.send(f"Deleted reaction role manager **{name}**.")
         except mongoengine.DoesNotExist:
             await ctx.send("Could not find role reaction manager with that name.")
 
@@ -234,3 +231,7 @@ class Roles(commands.Cog):
             guild = self.bot.get_guild(payload.guild_id)
             role = guild.get_role(rr.options[emoji])
             await guild.get_member(payload.user_id).remove_roles(role)
+
+
+def setup(bot):
+    bot.add_cog(Roles(bot))

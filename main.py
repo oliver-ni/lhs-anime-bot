@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 import mongoengine
 import os
 
-from cogs import *
 
 # Setup
 
@@ -17,37 +16,41 @@ bot = commands.Bot(
     help_command=commands.MinimalHelpCommand(),
 )
 
-bot.add_cog(Actions(bot))
-bot.add_cog(Administration(bot))
-bot.add_cog(Bell(bot))
-bot.add_cog(Bot(bot))
-bot.add_cog(Bracket(bot))
-bot.add_cog(Database(bot))
-bot.add_cog(Economy(bot))
-bot.add_cog(Fun(bot))
-bot.add_cog(Logs(bot))
-bot.add_cog(Roles(bot))
+bot.load_extension("jishaku")
+bot.load_extension("cogs.actions")
+bot.load_extension("cogs.administration")
+bot.load_extension("cogs.bell")
+bot.load_extension("cogs.bot")
+bot.load_extension("cogs.bracket")
+bot.load_extension("cogs.database")
+bot.load_extension("cogs.fun")
+bot.load_extension("cogs.logs")
+bot.load_extension("cogs.roles")
+bot.load_extension("cogs.welcome")
 
 
 @bot.event
 async def on_message(message):
     ctx = await bot.get_context(message)
 
-    ignore = False
-    delete = False
+    if ctx.guild:
+        ignore = False
+        delete = False
 
-    for cog in bot.cogs.values():
-        try:
-            i, d = await cog.check_message(ctx)
-            ignore, delete = ignore or i, delete or d
-        except AttributeError:
-            continue
+        for cog in bot.cogs.values():
+            try:
+                i, d = await cog.check_message(ctx)
+                ignore, delete = ignore or i, delete or d
+            except AttributeError:
+                continue
 
-    if delete:
-        await message.delete()
-        return
+        if delete:
+            await message.delete()
+            return
 
-    if not ignore:
+        if not ignore:
+            await bot.process_commands(message)
+    else:
         await bot.process_commands(message)
 
 
