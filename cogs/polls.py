@@ -79,12 +79,15 @@ class Polls(commands.Cog):
 
         # Get poll
 
-        try:
-            poll = models.Poll.objects.get(
+        def get_poll():
+            return models.Poll.objects.get(
                 message=payload.message_id,
                 channel=payload.channel_id,
                 guild=payload.guild_id,
             )
+
+        try:
+            poll = await self.bot.loop.run_in_executor(None, get_poll)
         except mongoengine.DoesNotExist:
             return
 
@@ -99,8 +102,12 @@ class Polls(commands.Cog):
             return
 
         # Update db
-        update_dict = {f"votes__{payload.user_id}": idx}
-        poll.update(**update_dict)
+
+        def update_poll():
+            update_dict = {f"votes__{payload.user_id}": idx}
+            poll.update(**update_dict)
+
+        await self.bot.loop.run_in_executor(None, update_poll)
 
         # Remove reaction & alert
 
@@ -114,6 +121,7 @@ class Polls(commands.Cog):
 
         # Update original message
 
+        poll = await self.bot.loop.run_in_executor(None, get_poll)
         embed = message.embeds[0]
         embed.set_footer(
             text=f"{len(poll.votes)} votes • Click on the reactions below to cast your vote!"
