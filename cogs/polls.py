@@ -116,6 +116,9 @@ class Polls(commands.Cog):
         channel = self.bot.get_channel(poll.channel)
         message = await channel.fetch_message(poll.message)
 
+        if user == self.bot.user:
+            return
+
         await message.remove_reaction(payload.emoji, user)
         await user.send(f"You voted for **{poll.options[idx]}**.")
 
