@@ -70,10 +70,9 @@ class Fun(commands.Cog):
         response = await ctx.send(embed=embed)
 
         async def add_reactions():
-            await response.add_reaction("🇦")
-            await response.add_reaction("🇧")
-            await response.add_reaction("🇨")
-            await response.add_reaction("🇩")
+            r = "🇦", "🇧", "🇨", "🇩"
+            for idx, choice in enumerate(answers):
+                await response.add_reaction(r[idx])
 
         async def wait_for_reactions():
             try:

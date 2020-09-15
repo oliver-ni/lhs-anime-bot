@@ -21,21 +21,17 @@ class LoggedAction(Document):
     after = StringField()
 
 
-class BracketMatch(EmbeddedDocument):
-    first = StringField(required=True)
-    second = StringField(required=True)
-    votes = MapField(field=BooleanField())
-
-
-class BracketRound(Document):
-    name = StringField(required=True, unique=True)
-    matches = EmbeddedDocumentListField(BracketMatch)
-    active = BooleanField(default=False, required=True)
-
-
 class RoleReact(Document):
     guild = LongField(required=True)
     channel = LongField(required=True)
     message = LongField(required=True, unique=True)
     name = StringField(required=True, unique=True)
     options = MapField(field=LongField())
+
+
+class Poll(Document):
+    guild = LongField(required=True)
+    channel = LongField(required=True)
+    message = LongField(required=True, unique=True)
+    options = ListField(field=StringField())
+    votes = MapField(field=IntField())
