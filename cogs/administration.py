@@ -6,7 +6,7 @@ import asyncio
 import math
 import re
 
-from .utils import models, checks
+from .utils import models, checks, constants
 
 
 class AlreadyDoneError(Exception):
@@ -26,6 +26,12 @@ class Administration(commands.Cog):
     async def check_message(self, ctx: commands.Context):
         ignore = False
         delete = False
+
+        words = ctx.message.lower().split()
+
+        if any(x in words for x in constants.WORDLIST):
+            ignore = True
+            delete = True
 
         return ignore, delete
 

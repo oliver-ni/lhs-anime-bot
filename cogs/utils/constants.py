@@ -41,3 +41,18 @@ NUMBER_REACTIONS = [
     "9️⃣",
     "🔟",
 ]
+
+
+WORDLIST = [
+    "chink",
+    "coon",
+    "cunt",
+    "fag",
+    "faggot",
+    "gook",
+    "nig",
+    "nigger",
+    "nigga",
+    "nigguh",
+]
+
