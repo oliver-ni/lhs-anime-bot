@@ -77,9 +77,6 @@ class Welcome(commands.Cog):
         if data is not None:
             return
 
-        if member.id != 138498458075136000:
-            return
-
         self.tasks[member.id] = self.bot.loop.create_task(self.verify_member(member))
 
     async def verify_member(self, member):
