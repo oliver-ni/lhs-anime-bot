@@ -25,6 +25,10 @@ class Bot(commands.Cog):
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send_help(ctx.command)
+        elif isinstance(error, commands.CommandOnCooldown):
+            await ctx.send(
+                f"Please wait **{int(error.retry_after)}** seconds before trying again."
+            )
         raise error
 
 

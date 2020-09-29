@@ -35,3 +35,10 @@ class Poll(Document):
     message = LongField(required=True, unique=True)
     options = ListField(field=StringField())
     votes = MapField(field=IntField())
+
+
+class Suggestion(Document):
+    mal_id = IntField(required=True, unique=True)
+    title = StringField(required=True)
+    message = LongField(required=True, unique=True)
+    votes = MapField(field=BooleanField())

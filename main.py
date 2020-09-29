@@ -26,6 +26,7 @@ bot.load_extension("cogs.fun")
 bot.load_extension("cogs.logs")
 bot.load_extension("cogs.polls")
 bot.load_extension("cogs.roles")
+bot.load_extension("cogs.suggestions")
 bot.load_extension("cogs.welcome")
 
 
