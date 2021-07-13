@@ -10,10 +10,10 @@ GUEST_ROLE = 643303716568432659
 VERIFIED_ROLE = 632830365337255955
 
 GRADE_ROLES = {
+    2025: 752033673829810207,
     2024: 752033532381102221,
     2023: 752033587678675054,
     2022: 752033633434337290,
-    2021: 752033673829810207,
 }
 
 ALL_ROLES = [GUEST_ROLE, VERIFIED_ROLE, *GRADE_ROLES.values()]
@@ -203,7 +203,7 @@ class Welcome(commands.Cog):
             )
 
             grade = int(m.content)
-            classof = 2033 - grade
+            classof = 2034 - grade
 
             await member.add_roles(member.guild.get_role(VERIFIED_ROLE))
             await member.add_roles(member.guild.get_role(GRADE_ROLES[classof]))
